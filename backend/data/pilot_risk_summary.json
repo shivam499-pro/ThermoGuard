@@ -139,7 +139,7 @@
       "weighted_spatial": 0.0,
       "weighted_spectral": 0.0,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": "nan"
+      "osm_primary_category": null
     },
     {
       "event_id": "EVT_01383431",
@@ -153,7 +153,7 @@
       "weighted_spatial": 0.0005175932200305576,
       "weighted_spectral": 0.0,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": "nan"
+      "osm_primary_category": null
     },
     {
       "event_id": "EVT_00795287",
@@ -167,7 +167,7 @@
       "weighted_spatial": 0.004069953617816224,
       "weighted_spectral": 0.0,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": "nan"
+      "osm_primary_category": null
     },
     {
       "event_id": "EVT_01557619",
@@ -181,7 +181,7 @@
       "weighted_spatial": 0.0002363274832617419,
       "weighted_spectral": 0.0,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": "nan"
+      "osm_primary_category": null
     },
     {
       "event_id": "EVT_00230882",
@@ -195,7 +195,7 @@
       "weighted_spatial": 0.0,
       "weighted_spectral": 0.041888249999999995,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": "nan"
+      "osm_primary_category": null
     }
   ]
 }

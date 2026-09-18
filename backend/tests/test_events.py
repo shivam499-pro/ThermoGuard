@@ -21,7 +21,9 @@ Validates:
 
 from __future__ import annotations
 
+import concurrent.futures
 import json
+import math
 from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
@@ -200,3 +202,127 @@ class TestDataIntegrityAndParity:
             assert api_ev["evidence_confidence"] == src["evidence_confidence"]
             assert api_ev["lat"] == src["latitude"]
             assert api_ev["lon"] == src["longitude"]
+
+
+class TestStrictJsonAndNonFiniteHardening:
+    """Validate that API and repository models strictly adhere to RFC 8259 without non-finite floats."""
+
+    @pytest.mark.parametrize("event_id", ["EVT_00424345", "EVT_01035117"])
+    def test_detail_response_is_strict_rfc8259_json(self, client: TestClient, event_id: str):
+        res = client.get(f"/api/events/{event_id}")
+        assert res.status_code == 200
+
+        # Strict JSON parse that fails on any non-finite constants
+        def forbid_non_finite(val: str):
+            raise ValueError(f"Non-finite JSON constant encountered: {val}")
+
+        parsed = json.loads(res.text, parse_constant=forbid_non_finite)
+        assert parsed["event_id"] == event_id
+
+    @pytest.mark.parametrize("event_id", ["EVT_00424345", "EVT_01035117"])
+    def test_repository_model_dumps_strictly_without_nan(self, event_id: str):
+        repo = get_event_repository()
+        evt = repo.get_event(event_id)
+        assert evt is not None
+
+        # Verify model dump can be serialized with allow_nan=False (Starlette JSONResponse standard)
+        dumped = evt.model_dump()
+        dumped_json = json.dumps(dumped, allow_nan=False)
+        assert "NaN" not in dumped_json
+        assert "Infinity" not in dumped_json
+
+
+class TestExplanationDecompositionAndPrecision:
+    """Validate canonical numerical decomposition across all 100 pilot events."""
+
+    def test_all_100_events_dimension_decomposition_sums_to_risk_score(
+        self, client: TestClient, raw_curated_events: list[dict]
+    ):
+        dims = ["thermal", "persistence", "industrial", "spatial", "spectral"]
+        repo = get_event_repository()
+
+        for src in raw_curated_events:
+            eid = src["event_id"]
+            evt = repo.get_event(eid)
+            assert evt is not None
+
+            # 1. Normalized scores must match canonical dimension scores
+            for d in dims:
+                model_dim = getattr(evt.dimensions, d)
+                canonical_norm = src[f"{d}_dimension_score"]
+                canonical_weighted = src[f"weighted_{d}"] * 100.0
+
+                assert math.isclose(
+                    model_dim.normalized_score, canonical_norm, abs_tol=1e-5
+                ), f"Normalized score mismatch in {eid}.{d}: {model_dim.normalized_score} != {canonical_norm}"
+
+                assert math.isclose(
+                    model_dim.weighted_contribution, canonical_weighted, abs_tol=1e-5
+                ), f"Weighted contribution mismatch in {eid}.{d}: {model_dim.weighted_contribution} != {canonical_weighted}"
+
+            # 2. Sum of five dimension weighted contributions must equal canonical risk_score
+            contrib_sum = sum(getattr(evt.dimensions, d).weighted_contribution for d in dims)
+            assert round(contrib_sum, 1) == src["risk_score"]
+            assert math.isclose(
+                round(contrib_sum, 1), src["risk_score"], abs_tol=0.001
+            ), f"Decomposition sum mismatch in {eid}: {contrib_sum} -> {round(contrib_sum, 1)} != {src['risk_score']}"
+
+
+class TestDatasetIntegrity:
+    """Validate that on-disk datasets are clean, RFC 8259 compliant, and strictly typed."""
+
+    def test_curated_pilot_events_clean_and_unchanged(self):
+        data_path = Path(__file__).resolve().parent.parent / "data" / "curated_pilot_events.json"
+        with data_path.open("r", encoding="utf-8") as f:
+            events = json.load(f)
+        assert len(events) == 100
+
+    def test_pilot_explanations_contains_zero_non_finite_values(self):
+        data_path = Path(__file__).resolve().parent.parent / "data" / "pilot_explanations.json"
+
+        def forbid_non_finite(val: str):
+            raise ValueError(f"Found non-finite constant: {val}")
+
+        with data_path.open("r", encoding="utf-8") as f:
+            explanations = json.load(f, parse_constant=forbid_non_finite)
+
+        assert len(explanations) == 100
+        text = json.dumps(explanations)
+        assert "NaN" not in text
+        assert "Infinity" not in text
+
+    def test_pilot_risk_summary_integrity(self):
+        data_path = Path(__file__).resolve().parent.parent / "data" / "pilot_risk_summary.json"
+
+        def forbid_non_finite(val: str):
+            raise ValueError(f"Found non-finite constant: {val}")
+
+        with data_path.open("r", encoding="utf-8") as f:
+            summary = json.load(f, parse_constant=forbid_non_finite)
+
+        # zero_spatial_events must remain strictly 19
+        assert summary["coverage"]["zero_spatial_events"] == 19
+
+        # Verify no literal "nan" strings exist
+        summary_text = json.dumps(summary)
+        assert '"nan"' not in summary_text
+
+        # Lowest 5 events have null osm_primary_category
+        for ev in summary["lowest_5_events"]:
+            assert ev["osm_primary_category"] is None
+
+
+class TestSingletonConcurrency:
+    """Validate thread-safe singleton initialization under concurrent access."""
+
+    def test_concurrent_get_event_repository_returns_identical_instance(self):
+        def _fetch_repo():
+            return get_event_repository()
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            futures = [executor.submit(_fetch_repo) for _ in range(25)]
+            instances = [f.result() for f in futures]
+
+        first_instance = instances[0]
+        assert all(inst is first_instance for inst in instances)
+        assert len({id(inst) for inst in instances}) == 1

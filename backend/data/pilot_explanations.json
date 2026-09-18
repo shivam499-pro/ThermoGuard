@@ -10643,7 +10643,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -10717,9 +10717,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -10905,7 +10905,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0213
@@ -10979,9 +10979,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -11167,7 +11167,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -11241,9 +11241,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -11429,7 +11429,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -11503,9 +11503,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -11691,7 +11691,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -11765,9 +11765,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -11953,7 +11953,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.1507
@@ -12027,9 +12027,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 3,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -12215,7 +12215,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -12289,9 +12289,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -12477,7 +12477,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -12551,9 +12551,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -12739,7 +12739,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0333
@@ -12813,9 +12813,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -13001,7 +13001,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -13075,9 +13075,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -13263,7 +13263,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -13337,9 +13337,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -13525,7 +13525,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0067
@@ -13599,9 +13599,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 2,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -13787,7 +13787,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0374
@@ -13861,9 +13861,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -14049,7 +14049,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -14123,9 +14123,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -14311,7 +14311,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.3552
@@ -14385,9 +14385,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 2,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -14573,7 +14573,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.1672
@@ -14647,9 +14647,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 2,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -14835,17 +14835,17 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0148
       },
       "spectral": {
-        "swir2_anomaly_ratio": NaN,
-        "ndvi": NaN,
-        "swir2_swir1_ratio": NaN,
-        "bsi": NaN,
-        "scl_clear_fraction": NaN,
+        "swir2_anomaly_ratio": null,
+        "ndvi": null,
+        "swir2_swir1_ratio": null,
+        "bsi": null,
+        "scl_clear_fraction": null,
         "temporal_delta_days": -5.14
       }
     },
@@ -14913,9 +14913,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -15101,7 +15101,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0253
@@ -15175,9 +15175,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 2,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -15363,7 +15363,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -15437,9 +15437,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -15625,17 +15625,17 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0327
       },
       "spectral": {
-        "swir2_anomaly_ratio": NaN,
-        "ndvi": NaN,
-        "swir2_swir1_ratio": NaN,
-        "bsi": NaN,
-        "scl_clear_fraction": NaN,
+        "swir2_anomaly_ratio": null,
+        "ndvi": null,
+        "swir2_swir1_ratio": null,
+        "bsi": null,
+        "scl_clear_fraction": null,
         "temporal_delta_days": -5.06
       }
     },
@@ -15702,9 +15702,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 2,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -15890,7 +15890,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -15964,9 +15964,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -16152,7 +16152,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -16226,9 +16226,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -16414,7 +16414,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -16488,9 +16488,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -16676,17 +16676,17 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
       },
       "spectral": {
-        "swir2_anomaly_ratio": NaN,
-        "ndvi": NaN,
-        "swir2_swir1_ratio": NaN,
-        "bsi": NaN,
-        "scl_clear_fraction": NaN,
+        "swir2_anomaly_ratio": null,
+        "ndvi": null,
+        "swir2_swir1_ratio": null,
+        "bsi": null,
+        "scl_clear_fraction": null,
         "temporal_delta_days": -0.15
       }
     },
@@ -16754,9 +16754,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -16942,7 +16942,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -17016,9 +17016,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -17204,7 +17204,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -17278,9 +17278,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -17466,7 +17466,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -17540,9 +17540,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -17728,7 +17728,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0382
@@ -17802,9 +17802,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 2,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -17990,7 +17990,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -18064,9 +18064,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -18252,7 +18252,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.0
@@ -18326,9 +18326,9 @@
     "contextual_annotations": {
       "worldcover_class": 40,
       "worldcover_class_name": "Cropland",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 1,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -18514,7 +18514,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.3795
@@ -18588,9 +18588,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 2,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -18776,7 +18776,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.1036
@@ -18850,9 +18850,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 2,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -19038,7 +19038,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 8.3322
@@ -19112,9 +19112,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 3,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -19300,7 +19300,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 1.2194
@@ -19374,9 +19374,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 3,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -19562,7 +19562,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 5.6379
@@ -19636,9 +19636,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 3,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -19824,7 +19824,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.9966
@@ -19898,9 +19898,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 3,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -20086,7 +20086,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 7.5397
@@ -20160,9 +20160,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 4,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -20348,7 +20348,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 3.3774
@@ -20422,9 +20422,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 4,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -20610,16 +20610,16 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 11.2464
       },
       "spectral": {
         "swir2_anomaly_ratio": 0.0,
-        "ndvi": NaN,
+        "ndvi": null,
         "swir2_swir1_ratio": 0.0,
-        "bsi": NaN,
+        "bsi": null,
         "scl_clear_fraction": 0.0,
         "temporal_delta_days": 5.91
       }
@@ -20687,9 +20687,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 3,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -20875,17 +20875,17 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 8.0814
       },
       "spectral": {
-        "swir2_anomaly_ratio": NaN,
-        "ndvi": NaN,
-        "swir2_swir1_ratio": NaN,
-        "bsi": NaN,
-        "scl_clear_fraction": NaN,
+        "swir2_anomaly_ratio": null,
+        "ndvi": null,
+        "swir2_swir1_ratio": null,
+        "bsi": null,
+        "scl_clear_fraction": null,
         "temporal_delta_days": -4.09
       }
     },
@@ -20952,9 +20952,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 4,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -21140,7 +21140,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.7619
@@ -21214,9 +21214,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 3,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -21402,7 +21402,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.5427
@@ -21476,9 +21476,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 3,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -21664,7 +21664,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 7.1956
@@ -21738,9 +21738,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 5,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -21926,7 +21926,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.8957
@@ -22000,9 +22000,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 3,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -22188,7 +22188,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 2.292
@@ -22262,9 +22262,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 4,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -22450,7 +22450,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 1.9001
@@ -22524,9 +22524,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 3,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -22712,7 +22712,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 12.7576
@@ -22786,9 +22786,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 3,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -22974,7 +22974,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 3.8916
@@ -23048,9 +23048,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 4,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -23236,17 +23236,17 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 1.057
       },
       "spectral": {
-        "swir2_anomaly_ratio": NaN,
-        "ndvi": NaN,
-        "swir2_swir1_ratio": NaN,
-        "bsi": NaN,
-        "scl_clear_fraction": NaN,
+        "swir2_anomaly_ratio": null,
+        "ndvi": null,
+        "swir2_swir1_ratio": null,
+        "bsi": null,
+        "scl_clear_fraction": null,
         "temporal_delta_days": 3.9
       }
     },
@@ -23313,9 +23313,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 4,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -23501,7 +23501,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.5074
@@ -23575,9 +23575,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 3,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -23763,7 +23763,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 10.6406
@@ -23837,9 +23837,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 4,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -24025,7 +24025,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 4.0237
@@ -24099,9 +24099,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 2,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -24287,7 +24287,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 48.7952
@@ -24361,9 +24361,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 4,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -24549,7 +24549,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 1.4746
@@ -24623,9 +24623,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 2,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -24811,7 +24811,7 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.3607
@@ -24885,9 +24885,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 2,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -25073,17 +25073,17 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 2.3591
       },
       "spectral": {
-        "swir2_anomaly_ratio": NaN,
-        "ndvi": NaN,
-        "swir2_swir1_ratio": NaN,
-        "bsi": NaN,
-        "scl_clear_fraction": NaN,
+        "swir2_anomaly_ratio": null,
+        "ndvi": null,
+        "swir2_swir1_ratio": null,
+        "bsi": null,
+        "scl_clear_fraction": null,
         "temporal_delta_days": 2.94
       }
     },
@@ -25150,9 +25150,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 4,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -25338,18 +25338,18 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 3.2946
       },
       "spectral": {
-        "swir2_anomaly_ratio": NaN,
-        "ndvi": NaN,
-        "swir2_swir1_ratio": NaN,
-        "bsi": NaN,
-        "scl_clear_fraction": NaN,
-        "temporal_delta_days": NaN
+        "swir2_anomaly_ratio": null,
+        "ndvi": null,
+        "swir2_swir1_ratio": null,
+        "bsi": null,
+        "scl_clear_fraction": null,
+        "temporal_delta_days": null
       }
     },
     "missing_and_stale_evidence": {
@@ -25415,9 +25415,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 3,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -25603,18 +25603,18 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 2.059
       },
       "spectral": {
-        "swir2_anomaly_ratio": NaN,
-        "ndvi": NaN,
-        "swir2_swir1_ratio": NaN,
-        "bsi": NaN,
-        "scl_clear_fraction": NaN,
-        "temporal_delta_days": NaN
+        "swir2_anomaly_ratio": null,
+        "ndvi": null,
+        "swir2_swir1_ratio": null,
+        "bsi": null,
+        "scl_clear_fraction": null,
+        "temporal_delta_days": null
       }
     },
     "missing_and_stale_evidence": {
@@ -25680,9 +25680,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 4,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -25868,18 +25868,18 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 16.3231
       },
       "spectral": {
-        "swir2_anomaly_ratio": NaN,
-        "ndvi": NaN,
-        "swir2_swir1_ratio": NaN,
-        "bsi": NaN,
-        "scl_clear_fraction": NaN,
-        "temporal_delta_days": NaN
+        "swir2_anomaly_ratio": null,
+        "ndvi": null,
+        "swir2_swir1_ratio": null,
+        "bsi": null,
+        "scl_clear_fraction": null,
+        "temporal_delta_days": null
       }
     },
     "missing_and_stale_evidence": {
@@ -25945,9 +25945,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 5,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
@@ -26133,18 +26133,18 @@
         "osm_matched_fraction": 0.0,
         "osm_containment_fraction": 0.0,
         "osm_proximity_fraction": 0.0,
-        "min_distance_m": NaN
+        "min_distance_m": null
       },
       "spatial": {
         "spatial_extent_km2": 0.2879
       },
       "spectral": {
-        "swir2_anomaly_ratio": NaN,
-        "ndvi": NaN,
-        "swir2_swir1_ratio": NaN,
-        "bsi": NaN,
-        "scl_clear_fraction": NaN,
-        "temporal_delta_days": NaN
+        "swir2_anomaly_ratio": null,
+        "ndvi": null,
+        "swir2_swir1_ratio": null,
+        "bsi": null,
+        "scl_clear_fraction": null,
+        "temporal_delta_days": null
       }
     },
     "missing_and_stale_evidence": {
@@ -26210,9 +26210,9 @@
     "contextual_annotations": {
       "worldcover_class": 10,
       "worldcover_class_name": "Tree cover",
-      "osm_primary_category": NaN,
-      "osm_sub_category": NaN,
-      "osm_tier": NaN,
+      "osm_primary_category": null,
+      "osm_sub_category": null,
+      "osm_tier": null,
       "distinct_satellites": 2,
       "note": "Contextual metadata has 0% direct risk weight per locked Phase IX methodology."
     },
