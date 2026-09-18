@@ -1,0 +1,77 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.whl
+venv/
+.venv/
+env/
+.env
+*.env.*
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tgz
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+*.env
+secrets/
+credentials/
+*.pem
+*.key
+
+# AWS
+.aws/
+cdk.out/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Data (satellite / large files — do not commit raw data to repo)
+*.bin
+*.tif
+*.tiff
+*.geotiff
+*.nc
+*.hdf
+*.hdf5
+*.h5
+*.parquet
+*.csv.gz
+data/
+cache/
+
+# Test / temp
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+scratch/
+tmp/
+temp/
+
+# Logs
+*.log
+logs/
