@@ -1,0 +1,17 @@
+# ThermoGuard – Backend Python Dependencies
+# Commit 1: backend foundation only
+#
+# Pin major versions; exact pins belong in a lock file (pip-compile / poetry.lock).
+# No AWS SDK, no Bedrock, no database drivers — those are later commits.
+
+# ── Web framework ─────────────────────────────────────────────────────────────
+fastapi>=0.111.0,<0.200.0
+uvicorn[standard]>=0.29.0,<0.40.0
+
+# ── Configuration ─────────────────────────────────────────────────────────────
+pydantic>=2.7.0,<3.0.0
+pydantic-settings>=2.2.0,<3.0.0
+
+# ── Testing ───────────────────────────────────────────────────────────────────
+pytest>=8.2.0,<9.0.0
+httpx>=0.27.0,<0.30.0          # required by FastAPI TestClient
