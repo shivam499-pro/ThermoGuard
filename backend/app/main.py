@@ -21,6 +21,7 @@ from fastapi.responses import JSONResponse
 
 from app.config import get_settings
 from app.schemas import HealthResponse
+from app.api.events import router as events_router
 
 # ── Logging setup ─────────────────────────────────────────────────────────────
 
@@ -83,6 +84,9 @@ def create_app() -> FastAPI:
             status_code=500,
             content={"detail": "Internal server error", "type": "server_error"},
         )
+
+    # ── Domain routers ─────────────────────────────────────────────────────
+    app.include_router(events_router, prefix=settings.api_prefix)
 
     # ── Routes ────────────────────────────────────────────────────────────────
 
