@@ -22,13 +22,17 @@ Validates:
 from __future__ import annotations
 
 import concurrent.futures
+import hashlib
 import json
 import math
 from pathlib import Path
+import threading
+from typing import Optional
 import pytest
 from fastapi.testclient import TestClient
 
 from app.main import create_app
+from app.services import event_service
 from app.services.event_service import get_event_repository
 
 
@@ -272,10 +276,46 @@ class TestDatasetIntegrity:
     """Validate that on-disk datasets are clean, RFC 8259 compliant, and strictly typed."""
 
     def test_curated_pilot_events_clean_and_unchanged(self):
+        """
+        Verify the canonical 100-event pilot cohort has not drifted or mutated.
+
+        Protects canonical data invariants:
+          - Exactly 100 distinct events with unique event_ids.
+          - Mandatory schema fields present across every record.
+          - Deterministic SHA-256 integrity hash across all event contents
+            (normalized JSON sorting keys, independent of OS-level CRLF/LF line endings).
+        """
         data_path = Path(__file__).resolve().parent.parent / "data" / "curated_pilot_events.json"
         with data_path.open("r", encoding="utf-8") as f:
             events = json.load(f)
+
         assert len(events) == 100
+        eids = [e["event_id"] for e in events]
+        assert len(set(eids)) == 100
+
+        # Validate mandatory canonical fields across all records
+        mandatory_fields = {
+            "event_id", "latitude", "longitude", "risk_score", "risk_tier",
+            "evidence_confidence", "confidence_tier", "primary_driver",
+            "thermal_dimension_score", "persistence_dimension_score",
+            "industrial_dimension_score", "spatial_dimension_score",
+            "spectral_dimension_score", "weighted_thermal",
+            "weighted_persistence", "weighted_industrial",
+            "weighted_spatial", "weighted_spectral", "methodology_version",
+        }
+        for ev in events:
+            assert mandatory_fields.issubset(ev.keys()), f"Missing canonical keys in {ev.get('event_id')}"
+
+        # Deterministic SHA-256 digest of normalized JSON content
+        # (sorted keys and compact separators).
+        # Protects event_id, coords, scores, weights, tiers, and metadata from drift across all platforms.
+        canonical_content = json.dumps(events, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        computed_hash = hashlib.sha256(canonical_content).hexdigest()
+        expected_hash = "1bada5b01535fb694b3388dfc5ffe680098a3efdb96e02001fa4a3a4f9d648da"
+        assert computed_hash == expected_hash, (
+            f"Canonical dataset hash mismatch! Computed {computed_hash} != {expected_hash}. "
+            "Canonical pilot events must not be altered."
+        )
 
     def test_pilot_explanations_contains_zero_non_finite_values(self):
         data_path = Path(__file__).resolve().parent.parent / "data" / "pilot_explanations.json"
@@ -313,16 +353,74 @@ class TestDatasetIntegrity:
 
 
 class TestSingletonConcurrency:
-    """Validate thread-safe singleton initialization under concurrent access."""
+    """Validate thread-safe singleton initialization under true first-use concurrent access."""
 
-    def test_concurrent_get_event_repository_returns_identical_instance(self):
-        def _fetch_repo():
-            return get_event_repository()
+    def test_concurrent_first_use_initialization_is_thread_safe(self):
+        """
+        Genuinely exercises first-use race conditions by ensuring _repository_instance
+        is None before multiple threads attempt initialization simultaneously at a barrier.
+        """
+        original_instance = event_service._repository_instance
+        original_init = event_service.EventRepository.__init__
 
-        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-            futures = [executor.submit(_fetch_repo) for _ in range(25)]
-            instances = [f.result() for f in futures]
+        init_counter = 0
+        init_lock = threading.Lock()
 
-        first_instance = instances[0]
-        assert all(inst is first_instance for inst in instances)
-        assert len({id(inst) for inst in instances}) == 1
+        def counting_init(self, *args, **kwargs):
+            nonlocal init_counter
+            with init_lock:
+                init_counter += 1
+            original_init(self, *args, **kwargs)
+
+        try:
+            # 1. Instrument EventRepository.__init__ to track instantiations
+            event_service.EventRepository.__init__ = counting_init
+
+            # 2. Reset singleton to None to force true first-use initialization race
+            event_service._repository_instance = None
+
+            # 3. Coordinate concurrent workers with a synchronization barrier
+            num_workers = 16
+            barrier = threading.Barrier(num_workers)
+            instances: list[Optional[event_service.EventRepository]] = [None] * num_workers
+            exceptions: list[Exception] = []
+
+            def worker(worker_idx: int) -> None:
+                try:
+                    barrier.wait(timeout=5.0)
+                    instances[worker_idx] = event_service.get_event_repository()
+                except Exception as exc:
+                    exceptions.append(exc)
+
+            threads = [
+                threading.Thread(target=worker, args=(i,), name=f"singleton-worker-{i}")
+                for i in range(num_workers)
+            ]
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join(timeout=10.0)
+
+            assert all(not t.is_alive() for t in threads), (
+                "One or more worker threads did not terminate"
+            )
+
+            # 4. Verify no thread encountered an error
+            assert not exceptions, f"Exceptions occurred during concurrent initialization: {exceptions}"
+
+            # 5. Verify every thread received the exact same instance
+            first_instance = instances[0]
+            assert first_instance is not None
+            assert all(inst is first_instance for inst in instances)
+            assert len({id(inst) for inst in instances}) == 1
+
+            # 6. Verify exactly one EventRepository instance was constructed
+            assert init_counter == 1, (
+                f"Singleton violation: EventRepository was initialized {init_counter} times "
+                "instead of exactly 1 under concurrent access."
+            )
+
+        finally:
+            # 7. Restore original production implementation and singleton state
+            event_service.EventRepository.__init__ = original_init
+            event_service._repository_instance = original_instance
