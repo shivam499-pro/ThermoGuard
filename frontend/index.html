@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ThermoGuard — Satellite Thermal Anomaly Dashboard</title>
+  <meta name="description" content="ThermoGuard investigation-priority dashboard for satellite thermal anomaly events across India. Deterministic risk assessment using PhaseIX-2026-09-14 methodology. Not a fire confirmation system." />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ── HEADER ─────────────────────────────────────────────────────────────── -->
+  <header class="app-header" role="banner">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="14" cy="14" r="13" stroke="url(#brandGrad)" stroke-width="2"/>
+            <path d="M14 6 L14 14 L19 18" stroke="url(#brandGrad)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="14" cy="14" r="2.5" fill="url(#brandGrad)"/>
+            <defs>
+              <linearGradient id="brandGrad" x1="0" y1="0" x2="28" y2="28" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#ff6b35"/>
+                <stop offset="100%" stop-color="#f7931e"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">ThermoGuard</span>
+          <span class="brand-subtitle">Satellite Thermal Anomaly Intelligence</span>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <div class="disclaimer-badge" role="note" aria-label="Scientific disclaimer">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <circle cx="7" cy="7" r="6.5" stroke="#f7931e" stroke-width="1.2"/>
+            <path d="M7 4v3.5M7 9.5v.5" stroke="#f7931e" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+          Investigation priority only — not a fire confirmation
+        </div>
+        <div class="header-stats">
+          <span id="hdr-event-count" class="stat-chip">— events</span>
+          <span id="hdr-methodology" class="stat-chip methodology">PhaseIX-2026-09-14</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── MAIN LAYOUT ─────────────────────────────────────────────────────────── -->
+  <main class="app-main" id="main-content">
+
+    <!-- ── LEFT PANEL: controls + event list ─────────────────────────────── -->
+    <aside class="left-panel" aria-label="Event filter and list">
+
+      <!-- Filter bar -->
+      <div class="filter-bar" role="search" aria-label="Filter events">
+        <div class="filter-row">
+          <div class="search-wrap">
+            <svg class="search-icon" width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+              <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M11 11l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input id="search-input" type="search" class="search-input" placeholder="Search event ID or land cover…" aria-label="Search events" autocomplete="off" />
+          </div>
+          <select id="tier-filter" class="tier-select" aria-label="Filter by risk tier">
+            <option value="">All tiers</option>
+            <option value="CRITICAL">Critical</option>
+            <option value="HIGH">High</option>
+            <option value="MODERATE">Moderate</option>
+            <option value="LOW">Low</option>
+          </select>
+        </div>
+
+        <div class="sort-row">
+          <label for="sort-select" class="sort-label">Sort by</label>
+          <select id="sort-select" class="sort-select" aria-label="Sort events">
+            <option value="risk_score_desc">Risk score ↓</option>
+            <option value="risk_score_asc">Risk score ↑</option>
+            <option value="duration_desc">Duration ↓</option>
+            <option value="confidence_desc">Confidence ↓</option>
+          </select>
+          <span id="filtered-count" class="filtered-count" aria-live="polite"></span>
+        </div>
+      </div>
+
+      <!-- Tier summary chips -->
+      <div class="tier-summary" id="tier-summary" role="region" aria-label="Risk tier summary">
+        <button class="tier-chip tier-critical" data-tier="CRITICAL" id="chip-critical" aria-pressed="false">
+          <span class="tier-dot"></span>
+          <span class="tier-label">Critical</span>
+          <span class="tier-count" id="count-critical">—</span>
+        </button>
+        <button class="tier-chip tier-high" data-tier="HIGH" id="chip-high" aria-pressed="false">
+          <span class="tier-dot"></span>
+          <span class="tier-label">High</span>
+          <span class="tier-count" id="count-high">—</span>
+        </button>
+        <button class="tier-chip tier-moderate" data-tier="MODERATE" id="chip-moderate" aria-pressed="false">
+          <span class="tier-dot"></span>
+          <span class="tier-label">Moderate</span>
+          <span class="tier-count" id="count-moderate">—</span>
+        </button>
+        <button class="tier-chip tier-low" data-tier="LOW" id="chip-low" aria-pressed="false">
+          <span class="tier-dot"></span>
+          <span class="tier-label">Low</span>
+          <span class="tier-count" id="count-low">—</span>
+        </button>
+      </div>
+
+      <!-- Event list -->
+      <div class="event-list-wrap" role="region" aria-label="Event list">
+        <div id="event-list" class="event-list" role="list" aria-live="polite" aria-label="Thermal anomaly events">
+          <div class="list-loading" id="list-loading" aria-live="assertive">
+            <div class="spinner" aria-hidden="true"></div>
+            <span>Loading pilot cohort…</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ── CENTER: GIS map ──────────────────────────────────────────────── -->
+    <section class="map-section" aria-label="Geospatial event map">
+      <div id="map" class="map-container" aria-label="Interactive map of thermal anomaly events" tabindex="0"></div>
+      <div class="map-overlay-legend" role="note" aria-label="Map legend">
+        <div class="legend-title">Risk Tier</div>
+        <div class="legend-item"><span class="legend-dot tier-critical"></span>Critical (&gt;75)</div>
+        <div class="legend-item"><span class="legend-dot tier-high"></span>High (50–75)</div>
+        <div class="legend-item"><span class="legend-dot tier-moderate"></span>Moderate (25–50)</div>
+        <div class="legend-item"><span class="legend-dot tier-low"></span>Low (&lt;25)</div>
+      </div>
+    </section>
+
+    <!-- ── RIGHT PANEL: event detail ────────────────────────────────────── -->
+    <aside class="detail-panel" id="detail-panel" aria-label="Event detail" aria-live="polite">
+      <div class="detail-empty" id="detail-empty">
+        <div class="detail-empty-icon" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="22" stroke="url(#emptyGrad)" stroke-width="2" stroke-dasharray="5 3"/>
+            <path d="M24 14 L24 26 M24 30 v2" stroke="url(#emptyGrad)" stroke-width="2.5" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="emptyGrad" x1="0" y1="0" x2="48" y2="48">
+                <stop offset="0%" stop-color="#ff6b35" stop-opacity="0.5"/>
+                <stop offset="100%" stop-color="#f7931e" stop-opacity="0.5"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <p>Select an event on the map or list to view its full scientific assessment.</p>
+      </div>
+
+      <!-- Detail content — shown when an event is selected -->
+      <div class="detail-content" id="detail-content" hidden>
+
+        <!-- Header -->
+        <div class="detail-header">
+          <div class="detail-id-row">
+            <code class="detail-event-id" id="det-event-id"></code>
+            <span class="detail-tier-badge" id="det-tier-badge"></span>
+          </div>
+          <div class="detail-score-row">
+            <div class="score-ring-wrap">
+              <svg class="score-ring" viewBox="0 0 80 80" width="80" height="80" aria-hidden="true">
+                <circle class="score-ring-bg" cx="40" cy="40" r="34" />
+                <circle class="score-ring-fill" id="det-ring-fill" cx="40" cy="40" r="34"
+                  stroke-dasharray="213.6" stroke-dashoffset="213.6" />
+              </svg>
+              <div class="score-ring-label">
+                <span class="score-value" id="det-score-value">—</span>
+                <span class="score-unit">/ 100</span>
+              </div>
+            </div>
+            <div class="score-meta">
+              <div class="score-meta-row">
+                <span class="score-meta-label">Confidence</span>
+                <span class="score-meta-value" id="det-confidence">—</span>
+              </div>
+              <div class="score-meta-row">
+                <span class="score-meta-label">Methodology</span>
+                <span class="score-meta-value monospace" id="det-methodology">—</span>
+              </div>
+              <div class="score-meta-row">
+                <span class="score-meta-label">Spatial extent</span>
+                <span class="score-meta-value" id="det-spatial-extent">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="detail-disclaimer" role="note">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+            <circle cx="6.5" cy="6.5" r="6" stroke="#f7931e" stroke-width="1.1"/>
+            <path d="M6.5 3.5v3M6.5 8.5v.5" stroke="#f7931e" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          Investigation priority for satellite thermal events. <strong>Not a fire confirmation.</strong>
+        </div>
+
+        <!-- Risk dimensions bar chart -->
+        <section class="detail-section" aria-labelledby="dims-heading">
+          <h2 class="section-title" id="dims-heading">Risk Dimension Breakdown</h2>
+          <div class="dims-chart" id="dims-chart" role="list" aria-label="Risk dimension scores"></div>
+        </section>
+
+        <!-- Investigation drivers -->
+        <section class="detail-section" aria-labelledby="drivers-heading">
+          <h2 class="section-title" id="drivers-heading">Investigation Drivers</h2>
+          <div class="drivers-grid">
+            <div class="driver-item driver-primary">
+              <span class="driver-label">Primary driver</span>
+              <span class="driver-value" id="det-primary">—</span>
+            </div>
+            <div class="driver-item driver-secondary">
+              <span class="driver-label">Secondary driver</span>
+              <span class="driver-value" id="det-secondary">—</span>
+            </div>
+            <div class="driver-item driver-weak">
+              <span class="driver-label">Weakest signal</span>
+              <span class="driver-value" id="det-weakest">—</span>
+            </div>
+          </div>
+          <div class="recommendation-box" id="det-recommendation-box">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+              <path d="M7 1L8.5 5.5H13L9.5 8.5L11 13L7 10L3 13L4.5 8.5L1 5.5H5.5L7 1Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+            </svg>
+            <span id="det-recommendation">—</span>
+          </div>
+        </section>
+
+        <!-- Thermal evidence -->
+        <section class="detail-section" aria-labelledby="thermal-heading">
+          <h2 class="section-title" id="thermal-heading">Thermal Evidence</h2>
+          <div class="evidence-grid">
+            <div class="ev-cell">
+              <span class="ev-label">FRP mean</span>
+              <span class="ev-value" id="det-frp-mean">—</span>
+              <span class="ev-unit">MW</span>
+            </div>
+            <div class="ev-cell">
+              <span class="ev-label">FRP max</span>
+              <span class="ev-value" id="det-frp-max">—</span>
+              <span class="ev-unit">MW</span>
+            </div>
+            <div class="ev-cell">
+              <span class="ev-label">Brightness temp.</span>
+              <span class="ev-value" id="det-brightness">—</span>
+              <span class="ev-unit">K</span>
+            </div>
+            <div class="ev-cell">
+              <span class="ev-label">SWIR-2 anomaly</span>
+              <span class="ev-value" id="det-swir">—</span>
+              <span class="ev-unit">ratio</span>
+            </div>
+            <div class="ev-cell">
+              <span class="ev-label">NDVI</span>
+              <span class="ev-value" id="det-ndvi">—</span>
+            </div>
+            <div class="ev-cell">
+              <span class="ev-label">Bare Soil Index</span>
+              <span class="ev-value" id="det-bsi">—</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Persistence / timeline -->
+        <section class="detail-section" aria-labelledby="persistence-heading">
+          <h2 class="section-title" id="persistence-heading">Persistence &amp; Timeline</h2>
+          <div class="timeline-row">
+            <div class="tl-item">
+              <span class="tl-label">First detection</span>
+              <span class="tl-value" id="det-first-detect">—</span>
+            </div>
+            <div class="tl-divider" aria-hidden="true"></div>
+            <div class="tl-item">
+              <span class="tl-label">Last detection</span>
+              <span class="tl-value" id="det-last-detect">—</span>
+            </div>
+          </div>
+          <div class="evidence-grid">
+            <div class="ev-cell">
+              <span class="ev-label">Duration</span>
+              <span class="ev-value" id="det-duration">—</span>
+              <span class="ev-unit">days</span>
+            </div>
+            <div class="ev-cell">
+              <span class="ev-label">Detection days</span>
+              <span class="ev-value" id="det-detect-days">—</span>
+            </div>
+            <div class="ev-cell">
+              <span class="ev-label">Total detections</span>
+              <span class="ev-value" id="det-detect-count">—</span>
+            </div>
+            <div class="ev-cell">
+              <span class="ev-label">Satellites</span>
+              <span class="ev-value" id="det-satellites">—</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Land cover / industrial context -->
+        <section class="detail-section" aria-labelledby="landcover-heading">
+          <h2 class="section-title" id="landcover-heading">Land Cover &amp; Industrial Context</h2>
+          <div class="context-list">
+            <div class="ctx-row">
+              <span class="ctx-label">WorldCover class</span>
+              <span class="ctx-value" id="det-worldcover">—</span>
+            </div>
+            <div class="ctx-row">
+              <span class="ctx-label">OSM category</span>
+              <span class="ctx-value" id="det-osm-cat">—</span>
+            </div>
+            <div class="ctx-row">
+              <span class="ctx-label">OSM sub-category</span>
+              <span class="ctx-value" id="det-osm-sub">—</span>
+            </div>
+            <div class="ctx-row">
+              <span class="ctx-label">Distance to industrial</span>
+              <span class="ctx-value" id="det-dist-ind">—</span>
+            </div>
+            <div class="ctx-row">
+              <span class="ctx-label">OSM matched fraction</span>
+              <span class="ctx-value" id="det-osm-matched">—</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Explanation narrative -->
+        <section class="detail-section" id="explanation-section" aria-labelledby="explanation-heading" hidden>
+          <h2 class="section-title" id="explanation-heading">Scientific Assessment</h2>
+          <div class="explanation-box" id="det-explanation-summary"></div>
+          <div class="explanation-box drivers" id="det-explanation-drivers"></div>
+          <div class="explanation-box recommendation" id="det-explanation-rec"></div>
+        </section>
+
+        <!-- Missing evidence -->
+        <div class="missing-evidence-box" id="det-missing-box" hidden>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M7 1L13 12H1L7 1Z" stroke="#f59e0b" stroke-width="1.3" stroke-linejoin="round"/>
+            <path d="M7 5.5v3M7 10v.5" stroke="#f59e0b" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          <span id="det-missing-evidence">—</span>
+        </div>
+
+      </div><!-- /detail-content -->
+    </aside>
+
+  </main>
+
+  <!-- ── ERROR TOAST ──────────────────────────────────────────────────────── -->
+  <div class="toast-container" id="toast-container" aria-live="assertive" role="alert"></div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN2GqnQ=" crossorigin=""></script>
+
+  <script src="app.js"></script>
+</body>
+</html>
