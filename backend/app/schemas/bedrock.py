@@ -30,7 +30,7 @@ Scientific guardrails documented here are enforced both at the prompt level
 from __future__ import annotations
 
 from typing import Any, Dict, List, Literal, Optional
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 # -- Input sub-models ----------------------------------------------------------
@@ -304,6 +304,45 @@ class BedrockContextInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
 
+# -- Guardrail constants -------------------------------------------------------
+
+#: Fields that are authoritative deterministic outputs.
+#: The service layer must assert these come from EventDetail, not from Bedrock.
+IMMUTABLE_DETERMINISTIC_FIELDS: tuple = (
+    "risk_score",
+    "risk_tier",
+    "evidence_confidence",
+    "confidence_tier",
+)
+
+#: Fields that must NEVER appear in BedrockAnalystInput (ground-truth labels).
+FORBIDDEN_GROUND_TRUTH_FIELDS: tuple = (
+    "is_confirmed_fire",
+    "validated_class",
+    "ground_truth",
+    "label",
+    "true_positive",
+    "false_positive",
+    "evaluation_label",
+    "gt_class",
+)
+
+#: Mandatory scientific caveats injected into every BedrockAnalystInput.
+MANDATORY_SCIENTIFIC_GUARDRAILS: tuple = (
+    "Risk score reflects observed physical/contextual evidence strength; NOT ground-truth validated.",
+    "Evidence Confidence is observational quality/corroboration; NOT class probability.",
+    "Sentinel-2 SWIR bands (B11/B12) measure surface reflectance contrast; NOT temperature or active combustion.",
+    "OSM proximity indicates mapped infrastructure co-location; NOT proof of industrial causation.",
+    "Missing OSM data does NOT confirm absence of industry.",
+    "LOW risk + LOW confidence does NOT imply safety or confirmed absence of hazard.",
+    "Missing evidence lowers the observed score on a fixed scale; must NOT be interpreted as lower real-world danger.",
+    "You must NOT recalculate risk_score, risk_tier, evidence_confidence, or confidence_tier.",
+    "You must NOT claim validated fire classification, confirmed active combustion, or emergency-response authority.",
+    "You must NOT invent sensor observations or fabricate missing evidence values.",
+    "You must NOT use ground-truth or evaluation labels as inference inputs.",
+)
+
+
 # -- Top-level Bedrock Input Contract -----------------------------------------
 
 class BedrockAnalystInput(BaseModel):
@@ -364,12 +403,22 @@ class BedrockAnalystInput(BaseModel):
         ),
     )
     scientific_guardrails: List[str] = Field(
-        default_factory=list,
+        ...,
         description=(
             "Mandatory scientific constraints Bedrock must follow. "
-            "Populated from pilot_explanations.scientific_caveats."
+            "Must contain all MANDATORY_SCIENTIFIC_GUARDRAILS."
         ),
     )
+
+    @field_validator("scientific_guardrails")
+    @classmethod
+    def validate_mandatory_guardrails(cls, v: List[str]) -> List[str]:
+        missing = [g for g in MANDATORY_SCIENTIFIC_GUARDRAILS if g not in v]
+        if missing:
+            raise ValueError(
+                f"Missing mandatory scientific guardrails: {missing}"
+            )
+        return v
 
     model_config = ConfigDict(extra="forbid")
 
@@ -540,42 +589,3 @@ class BedrockAnalystResponse(BaseModel):
     )
 
     model_config = ConfigDict(extra="forbid")
-
-
-# -- Guardrail constants -------------------------------------------------------
-
-#: Fields that are authoritative deterministic outputs.
-#: The service layer must assert these come from EventDetail, not from Bedrock.
-IMMUTABLE_DETERMINISTIC_FIELDS: tuple = (
-    "risk_score",
-    "risk_tier",
-    "evidence_confidence",
-    "confidence_tier",
-)
-
-#: Fields that must NEVER appear in BedrockAnalystInput (ground-truth labels).
-FORBIDDEN_GROUND_TRUTH_FIELDS: tuple = (
-    "is_confirmed_fire",
-    "validated_class",
-    "ground_truth",
-    "label",
-    "true_positive",
-    "false_positive",
-    "evaluation_label",
-    "gt_class",
-)
-
-#: Mandatory scientific caveats injected into every BedrockAnalystInput.
-MANDATORY_SCIENTIFIC_GUARDRAILS: tuple = (
-    "Risk score reflects observed physical/contextual evidence strength; NOT ground-truth validated.",
-    "Evidence Confidence is observational quality/corroboration; NOT class probability.",
-    "Sentinel-2 SWIR bands (B11/B12) measure surface reflectance contrast; NOT temperature or active combustion.",
-    "OSM proximity indicates mapped infrastructure co-location; NOT proof of industrial causation.",
-    "Missing OSM data does NOT confirm absence of industry.",
-    "LOW risk + LOW confidence does NOT imply safety or confirmed absence of hazard.",
-    "Missing evidence lowers the observed score on a fixed scale; must NOT be interpreted as lower real-world danger.",
-    "You must NOT recalculate risk_score, risk_tier, evidence_confidence, or confidence_tier.",
-    "You must NOT claim validated fire classification, confirmed active combustion, or emergency-response authority.",
-    "You must NOT invent sensor observations or fabricate missing evidence values.",
-    "You must NOT use ground-truth or evaluation labels as inference inputs.",
-)

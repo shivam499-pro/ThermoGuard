@@ -427,3 +427,78 @@ class TestScientificCaveatsAndGuardrails:
         assert resp.evidence_citations == llm_out.evidence_citations
         assert resp.evidence_gaps_and_caveats == llm_out.evidence_gaps_and_caveats
         assert resp.triage_recommendation.status == llm_out.triage_recommendation.status
+
+    def test_all_mandatory_guardrails_supplied_accepted(self, sample_event: EventDetail):
+        """Constructing BedrockAnalystInput with exactly all mandatory guardrails is accepted."""
+        base_input = build_bedrock_input(sample_event)
+        data = base_input.model_dump()
+        data["scientific_guardrails"] = list(MANDATORY_SCIENTIFIC_GUARDRAILS)
+        valid_input = BedrockAnalystInput(**data)
+        assert set(MANDATORY_SCIENTIFIC_GUARDRAILS).issubset(set(valid_input.scientific_guardrails))
+
+    def test_no_guardrails_supplied_rejected(self, sample_event: EventDetail):
+        """Omitting scientific_guardrails or supplying an empty list raises ValidationError."""
+        base_input = build_bedrock_input(sample_event)
+        data = base_input.model_dump()
+
+        # Omitted entirely
+        del data["scientific_guardrails"]
+        with pytest.raises(ValidationError) as exc_omitted:
+            BedrockAnalystInput(**data)
+        assert "scientific_guardrails" in str(exc_omitted.value)
+        assert "Field required" in str(exc_omitted.value)
+
+        # Empty list
+        data["scientific_guardrails"] = []
+        with pytest.raises(ValidationError) as exc_empty:
+            BedrockAnalystInput(**data)
+        assert "Missing mandatory scientific guardrails" in str(exc_empty.value)
+
+    def test_one_mandatory_guardrail_removed_rejected(self, sample_event: EventDetail):
+        """Removing a single mandatory guardrail raises ValidationError naming the missing guardrail."""
+        base_input = build_bedrock_input(sample_event)
+        data = base_input.model_dump()
+
+        removed_guardrail = MANDATORY_SCIENTIFIC_GUARDRAILS[0]
+        data["scientific_guardrails"] = [
+            g for g in MANDATORY_SCIENTIFIC_GUARDRAILS if g != removed_guardrail
+        ]
+
+        with pytest.raises(ValidationError) as exc_info:
+            BedrockAnalystInput(**data)
+        assert "Missing mandatory scientific guardrails" in str(exc_info.value)
+        assert removed_guardrail in str(exc_info.value)
+
+    def test_multiple_mandatory_guardrails_removed_rejected(self, sample_event: EventDetail):
+        """Removing multiple mandatory guardrails raises ValidationError naming all missing guardrails."""
+        base_input = build_bedrock_input(sample_event)
+        data = base_input.model_dump()
+
+        removed_guardrails = [MANDATORY_SCIENTIFIC_GUARDRAILS[1], MANDATORY_SCIENTIFIC_GUARDRAILS[3]]
+        data["scientific_guardrails"] = [
+            g for g in MANDATORY_SCIENTIFIC_GUARDRAILS if g not in removed_guardrails
+        ]
+
+        with pytest.raises(ValidationError) as exc_info:
+            BedrockAnalystInput(**data)
+        assert "Missing mandatory scientific guardrails" in str(exc_info.value)
+        for missing_g in removed_guardrails:
+            assert missing_g in str(exc_info.value)
+
+    def test_additional_non_mandatory_guardrails_accepted(self, sample_event: EventDetail):
+        """Additional non-mandatory pilot caveats appended to mandatory guardrails are accepted."""
+        base_input = build_bedrock_input(sample_event)
+        data = base_input.model_dump()
+
+        extra_caveat = "Local cloud cover advisory: Optical verification pending subsequent pass."
+        data["scientific_guardrails"] = list(MANDATORY_SCIENTIFIC_GUARDRAILS) + [extra_caveat]
+
+        valid_input = BedrockAnalystInput(**data)
+        assert extra_caveat in valid_input.scientific_guardrails
+        assert set(MANDATORY_SCIENTIFIC_GUARDRAILS).issubset(set(valid_input.scientific_guardrails))
+
+    def test_build_bedrock_input_satisfies_schema(self, sample_event: EventDetail):
+        """build_bedrock_input(sample_event) produces a BedrockAnalystInput satisfying the hardened schema."""
+        inp = build_bedrock_input(sample_event)
+        assert isinstance(inp, BedrockAnalystInput)
+        assert all(g in inp.scientific_guardrails for g in MANDATORY_SCIENTIFIC_GUARDRAILS)
