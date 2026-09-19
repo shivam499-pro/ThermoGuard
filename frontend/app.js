@@ -133,7 +133,7 @@ async function fetchEvents() {
   if (!response.ok) {
     throw new Error(`API error ${response.status}: ${response.statusText}`);
   }
-  return response.json();
+  return response.json().then(data => data.events);
 }
 
 async function fetchEvent(eventId) {
@@ -185,7 +185,7 @@ const MapModule = (() => {
     Object.keys(markerIndex).forEach(k => delete markerIndex[k]);
 
     events.forEach(ev => {
-      if (ev.latitude === null || ev.longitude === null) return;
+      if (ev.lat === null || ev.lon === null) return;
 
       const r = markerRadius(ev.risk_score);
       const tierCls = tierClass(ev.risk_tier);
@@ -198,7 +198,7 @@ const MapModule = (() => {
         html: '',
       });
 
-      const marker = L.marker([ev.latitude, ev.longitude], { icon, title: ev.event_id })
+      const marker = L.marker([ev.lat, ev.lon], { icon, title: ev.event_id })
         .bindPopup(buildPopupHtml(ev), { maxWidth: 220, className: '' });
 
       marker.on('click', () => {
@@ -369,8 +369,9 @@ const DetailModule = (() => {
     // Header
     document.getElementById('det-event-id').textContent    = ev.event_id;
     document.getElementById('det-methodology').textContent = display(ev.methodology_version);
+    const spatialExtent = ev.dimensions?.spatial?.raw?.spatial_extent_km2 ?? ev.spatial_extent_km2;
     document.getElementById('det-spatial-extent').textContent =
-      ev.spatial_extent_km2 !== null ? `${Number(ev.spatial_extent_km2).toFixed(2)} km²` : 'Not available';
+      spatialExtent != null ? `${Number(spatialExtent).toFixed(2)} km²` : 'Not available';
 
     // Tier badge
     const tierBadge = document.getElementById('det-tier-badge');
@@ -396,60 +397,66 @@ const DetailModule = (() => {
         : 'Not available';
 
     // Drivers
-    document.getElementById('det-primary').textContent   = display(ev.primary_driver);
-    document.getElementById('det-secondary').textContent = display(ev.secondary_driver);
-    document.getElementById('det-weakest').textContent   = display(ev.weakest_dimension);
-    document.getElementById('det-recommendation').textContent = display(ev.investigation_recommendation);
+    document.getElementById('det-primary').textContent   = display(ev.ranking?.primary_driver);
+    document.getElementById('det-secondary').textContent = display(ev.ranking?.secondary_driver);
+    document.getElementById('det-weakest').textContent   = display(ev.ranking?.weakest_dimension);
+    document.getElementById('det-recommendation').textContent = display(ev.explanation?.recommendation);
 
     // Risk dimensions
     renderDimensions(ev);
 
     // Thermal evidence
-    setText('det-frp-mean',   fmtNum(ev.frp_mean,   2));
-    setText('det-frp-max',    fmtNum(ev.frp_max,    2));
-    setText('det-brightness', fmtNum(ev.brightness_mean, 2));
-    setText('det-swir',       fmtNum(ev.swir2_anomaly_ratio, 4));
-    setText('det-ndvi',       fmtNum(ev.ndvi,        4));
-    setText('det-bsi',        fmtNum(ev.bsi,         4));
+    setText('det-frp-mean',   fmtNum(ev.thermal?.frp_mean,   2));
+    setText('det-frp-max',    fmtNum(ev.thermal?.frp_max,    2));
+    setText('det-brightness', fmtNum(ev.thermal?.brightness_mean, 2));
+    setText('det-swir',       fmtNum(ev.spectral?.swir2_anomaly_ratio, 4));
+    setText('det-ndvi',       fmtNum(ev.spectral?.ndvi,        4));
+    setText('det-bsi',        fmtNum(ev.spectral?.bsi,         4));
 
     // Timeline / persistence
-    setText('det-first-detect',  fmtDatetime(ev.first_detection));
-    setText('det-last-detect',   fmtDatetime(ev.last_detection));
-    setText('det-duration',      fmtNum(ev.duration_days, 1));
-    setText('det-detect-days',   display(ev.distinct_detection_days));
-    setText('det-detect-count',  display(ev.detection_count));
-    setText('det-satellites',    display(ev.distinct_satellites));
+    setText('det-first-detect',  fmtDatetime(ev.temporal?.first_detection));
+    setText('det-last-detect',   fmtDatetime(ev.temporal?.last_detection));
+    setText('det-duration',      fmtNum(ev.temporal?.duration_days, 1));
+    setText('det-detect-days',   display(ev.temporal?.distinct_detection_days));
+    setText('det-detect-count',  display(ev.temporal?.detection_count));
+    setText('det-satellites',    display(ev.context?.distinct_satellites));
 
     // Land cover
-    setText('det-worldcover',   display(ev.worldcover_class_name));
-    setText('det-osm-cat',      display(ev.osm_primary_category));
-    setText('det-osm-sub',      display(ev.osm_sub_category));
+    setText('det-worldcover',   display(ev.context?.worldcover_class_name));
+    setText('det-osm-cat',      display(ev.context?.osm_primary_category));
+    setText('det-osm-sub',      display(ev.context?.osm_sub_category));
+    const distInd = ev.context?.distance_to_industrial_m;
     setText('det-dist-ind',
-      ev.distance_to_industrial_m !== null
-        ? `${Number(ev.distance_to_industrial_m).toFixed(0)} m`
+      distInd != null
+        ? `${Number(distInd).toFixed(0)} m`
         : 'Not available');
+    const osmMatched = ev.dimensions?.industrial?.raw?.osm_matched_fraction;
     setText('det-osm-matched',
-      ev.osm_matched_fraction !== null
-        ? `${(ev.osm_matched_fraction * 100).toFixed(1)}%`
+      osmMatched != null
+        ? `${(osmMatched * 100).toFixed(1)}%`
         : 'Not available');
 
     // Explanation narrative
     const expSection = document.getElementById('explanation-section');
-    const hasSummary = ev.explanation_summary || ev.explanation_drivers || ev.explanation_recommendation;
+    const expSummary = ev.explanation?.analyst_synthesis;
+    const expDrivers = ev.explanation?.task28_explanation?.contribution_ranking?.primary_driver_text;
+    const expRec     = ev.explanation?.recommendation;
+    const hasSummary = expSummary || expDrivers || expRec;
     if (hasSummary) {
       expSection.removeAttribute('hidden');
-      setHtml('det-explanation-summary', ev.explanation_summary || '');
-      setHtml('det-explanation-drivers', ev.explanation_drivers || '');
-      setHtml('det-explanation-rec',     ev.explanation_recommendation || '');
+      setHtml('det-explanation-summary', expSummary || '');
+      setHtml('det-explanation-drivers', expDrivers || '');
+      setHtml('det-explanation-rec',     expRec || '');
     } else {
       expSection.setAttribute('hidden', '');
     }
 
     // Missing evidence
     const missingBox = document.getElementById('det-missing-box');
-    if (ev.missing_evidence) {
+    const limitations = ev.explanation?.limitations;
+    if (limitations) {
       missingBox.removeAttribute('hidden');
-      setText('det-missing-evidence', ev.missing_evidence);
+      setText('det-missing-evidence', limitations);
     } else {
       missingBox.setAttribute('hidden', '');
     }
@@ -461,9 +468,11 @@ const DetailModule = (() => {
     chart.innerHTML = '';
 
     DIMENSIONS.forEach(d => {
-      const rawScore   = dims[`${d.key}_score`];
-      const rawWeighted = dims[`weighted_${d.key}`];
-      const scoreVal   = rawScore !== null && rawScore !== undefined ? Number(rawScore) : null;
+      const dim = dims?.[d.key];
+      const scoreVal =
+        dim?.normalized_score !== undefined && dim?.normalized_score !== null
+          ? dim.normalized_score
+          : null;
       const pct        = scoreVal !== null ? Math.round(scoreVal * 100) : null;
       const barW       = scoreVal !== null ? (scoreVal * 100).toFixed(1) : 0;
 
@@ -562,7 +571,7 @@ window.selectEvent = async function selectEvent(eventId) {
   ListModule.setSelectedCard(eventId);
   const summary = State.allEvents.find(e => e.event_id === eventId);
   if (summary) {
-    MapModule.flyTo(summary.latitude, summary.longitude);
+    MapModule.flyTo(summary.lat, summary.lon);
     MapModule.highlightMarker(eventId);
   }
 
