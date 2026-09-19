@@ -27,6 +27,7 @@ from app.schemas.bedrock import (
     BedrockAnalystOutput,
     BedrockAnalystResponse,
     BedrockTriageRecommendation,
+    BedrockTriageStatus,
     FORBIDDEN_GROUND_TRUTH_FIELDS,
     IMMUTABLE_DETERMINISTIC_FIELDS,
     MANDATORY_SCIENTIFIC_GUARDRAILS,
@@ -127,6 +128,14 @@ class TestValidBedrockOutputValidation:
         assert out.triage_recommendation.status == "Investigate"
         assert len(out.triage_recommendation.action_checklist) >= 1
 
+    @pytest.mark.parametrize("status", ["Monitor", "Investigate", "Escalate", "Deprioritise"])
+    def test_all_allowed_triage_statuses_accepted(self, valid_llm_output_data: dict, status: str):
+        """Each allowed triage status ('Monitor', 'Investigate', 'Escalate', 'Deprioritise') is accepted."""
+        data = dict(valid_llm_output_data)
+        data["triage_recommendation"] = dict(data["triage_recommendation"], status=status)
+        out = BedrockAnalystOutput(**data)
+        assert out.triage_recommendation.status == status
+
 
 # -- 3. Missing Required Output Field -----------------------------------------
 
@@ -189,6 +198,18 @@ class TestInvalidOutputType:
             BedrockAnalystOutput(**data)
         assert "ai_analyst_synthesis" in str(exc_info.value)
 
+    @pytest.mark.parametrize(
+        "invalid_status",
+        ["", "ArbitraryStatus", "URGENT", "LOW", "CRITICAL", "123", "monitor", "investigate"],
+    )
+    def test_invalid_or_empty_triage_status_rejected(self, valid_llm_output_data: dict, invalid_status: str):
+        """Invalid arbitrary or empty status strings must raise ValidationError."""
+        data = dict(valid_llm_output_data)
+        data["triage_recommendation"] = dict(data["triage_recommendation"], status=invalid_status)
+        with pytest.raises(ValidationError) as exc_info:
+            BedrockAnalystOutput(**data)
+        assert "status" in str(exc_info.value)
+
 
 # -- 5. Deterministic Risk Score Remains Unchanged ----------------------------
 
@@ -213,6 +234,34 @@ class TestDeterministicRiskScoreImmutability:
         with pytest.raises(ValidationError) as exc_info:
             BedrockAnalystOutput(**forged_data)
         assert "Extra inputs are not permitted" in str(exc_info.value)
+
+    @pytest.mark.parametrize(
+        "score_field",
+        ["risk_score", "risk_tier", "evidence_confidence", "confidence_tier"],
+    )
+    def test_bedrock_cannot_inject_deterministic_fields(
+        self, valid_llm_output_data: dict, score_field: str
+    ):
+        """Bedrock cannot inject any deterministic score or tier fields; extra='forbid' rejects them."""
+        forged_data = dict(valid_llm_output_data)
+        forged_data[score_field] = 99.9 if "score" in score_field or "confidence" in score_field else "CRITICAL"
+        with pytest.raises(ValidationError) as exc_info:
+            BedrockAnalystOutput(**forged_data)
+        assert "Extra inputs are not permitted" in str(exc_info.value)
+
+    def test_assemble_analyst_response_sources_deterministic_fields_from_event_detail(
+        self, sample_event: EventDetail, valid_llm_output_data: dict
+    ):
+        """assemble_analyst_response binds immutable scores strictly from EventDetail."""
+        llm_out = BedrockAnalystOutput(**valid_llm_output_data)
+        resp = assemble_analyst_response(sample_event, llm_out)
+
+        assert resp.risk_score == sample_event.risk_score
+        assert resp.risk_tier == sample_event.risk_tier
+        assert resp.evidence_confidence == sample_event.evidence_confidence
+        assert resp.confidence_tier == sample_event.confidence_tier
+        assert resp.ai_analyst_synthesis == llm_out.ai_analyst_synthesis
+        assert resp.triage_recommendation.status == llm_out.triage_recommendation.status
 
 
 # -- 6. Deterministic Risk Tier Remains Unchanged -----------------------------

@@ -1,4 +1,4 @@
-﻿"""
+"""
 ThermoGuard -- Amazon Bedrock Analyst Contract Schemas.
 
 Defines the typed, Pydantic-validated contracts for:
@@ -29,7 +29,7 @@ Scientific guardrails documented here are enforced both at the prompt level
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Literal, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -376,19 +376,22 @@ class BedrockAnalystInput(BaseModel):
 
 # -- Output sub-models --------------------------------------------------------
 
+BedrockTriageStatus = Literal["Monitor", "Investigate", "Escalate", "Deprioritise"]
+
+
 class BedrockTriageRecommendation(BaseModel):
     """
-    Operational triage recommendation from the AI analyst.
+    Operational triage recommendation proposed by the AI analyst.
 
-    Bedrock generates the narrative; the backend inserts final deterministic
-    values at assembly time (status is validated against allowed values).
+    Represents an advisory AI triage disposition. It does NOT replace or override
+    the authoritative deterministic risk_tier or the baseline investigation priority.
     """
 
-    status: str = Field(
+    status: BedrockTriageStatus = Field(
         ...,
         description=(
-            "Triage disposition, e.g., Monitor, Investigate, Escalate, "
-            "Deprioritise. Must be consistent with the deterministic risk_tier."
+            "Operational AI triage disposition ('Monitor', 'Investigate', 'Escalate', "
+            "'Deprioritise'). Advisory only; does NOT replace or override deterministic risk_tier."
         ),
     )
     rationale: str = Field(
