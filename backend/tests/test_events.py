@@ -21,12 +21,18 @@ Validates:
 
 from __future__ import annotations
 
+import concurrent.futures
+import hashlib
 import json
+import math
 from pathlib import Path
+import threading
+from typing import Optional
 import pytest
 from fastapi.testclient import TestClient
 
 from app.main import create_app
+from app.services import event_service
 from app.services.event_service import get_event_repository
 
 
@@ -200,3 +206,221 @@ class TestDataIntegrityAndParity:
             assert api_ev["evidence_confidence"] == src["evidence_confidence"]
             assert api_ev["lat"] == src["latitude"]
             assert api_ev["lon"] == src["longitude"]
+
+
+class TestStrictJsonAndNonFiniteHardening:
+    """Validate that API and repository models strictly adhere to RFC 8259 without non-finite floats."""
+
+    @pytest.mark.parametrize("event_id", ["EVT_00424345", "EVT_01035117"])
+    def test_detail_response_is_strict_rfc8259_json(self, client: TestClient, event_id: str):
+        res = client.get(f"/api/events/{event_id}")
+        assert res.status_code == 200
+
+        # Strict JSON parse that fails on any non-finite constants
+        def forbid_non_finite(val: str):
+            raise ValueError(f"Non-finite JSON constant encountered: {val}")
+
+        parsed = json.loads(res.text, parse_constant=forbid_non_finite)
+        assert parsed["event_id"] == event_id
+
+    @pytest.mark.parametrize("event_id", ["EVT_00424345", "EVT_01035117"])
+    def test_repository_model_dumps_strictly_without_nan(self, event_id: str):
+        repo = get_event_repository()
+        evt = repo.get_event(event_id)
+        assert evt is not None
+
+        # Verify model dump can be serialized with allow_nan=False (Starlette JSONResponse standard)
+        dumped = evt.model_dump()
+        dumped_json = json.dumps(dumped, allow_nan=False)
+        assert "NaN" not in dumped_json
+        assert "Infinity" not in dumped_json
+
+
+class TestExplanationDecompositionAndPrecision:
+    """Validate canonical numerical decomposition across all 100 pilot events."""
+
+    def test_all_100_events_dimension_decomposition_sums_to_risk_score(
+        self, client: TestClient, raw_curated_events: list[dict]
+    ):
+        dims = ["thermal", "persistence", "industrial", "spatial", "spectral"]
+        repo = get_event_repository()
+
+        for src in raw_curated_events:
+            eid = src["event_id"]
+            evt = repo.get_event(eid)
+            assert evt is not None
+
+            # 1. Normalized scores must match canonical dimension scores
+            for d in dims:
+                model_dim = getattr(evt.dimensions, d)
+                canonical_norm = src[f"{d}_dimension_score"]
+                canonical_weighted = src[f"weighted_{d}"] * 100.0
+
+                assert math.isclose(
+                    model_dim.normalized_score, canonical_norm, abs_tol=1e-5
+                ), f"Normalized score mismatch in {eid}.{d}: {model_dim.normalized_score} != {canonical_norm}"
+
+                assert math.isclose(
+                    model_dim.weighted_contribution, canonical_weighted, abs_tol=1e-5
+                ), f"Weighted contribution mismatch in {eid}.{d}: {model_dim.weighted_contribution} != {canonical_weighted}"
+
+            # 2. Sum of five dimension weighted contributions must equal canonical risk_score
+            contrib_sum = sum(getattr(evt.dimensions, d).weighted_contribution for d in dims)
+            assert round(contrib_sum, 1) == src["risk_score"]
+            assert math.isclose(
+                round(contrib_sum, 1), src["risk_score"], abs_tol=0.001
+            ), f"Decomposition sum mismatch in {eid}: {contrib_sum} -> {round(contrib_sum, 1)} != {src['risk_score']}"
+
+
+class TestDatasetIntegrity:
+    """Validate that on-disk datasets are clean, RFC 8259 compliant, and strictly typed."""
+
+    def test_curated_pilot_events_clean_and_unchanged(self):
+        """
+        Verify the canonical 100-event pilot cohort has not drifted or mutated.
+
+        Protects canonical data invariants:
+          - Exactly 100 distinct events with unique event_ids.
+          - Mandatory schema fields present across every record.
+          - Deterministic SHA-256 integrity hash across all event contents
+            (normalized JSON sorting keys, independent of OS-level CRLF/LF line endings).
+        """
+        data_path = Path(__file__).resolve().parent.parent / "data" / "curated_pilot_events.json"
+        with data_path.open("r", encoding="utf-8") as f:
+            events = json.load(f)
+
+        assert len(events) == 100
+        eids = [e["event_id"] for e in events]
+        assert len(set(eids)) == 100
+
+        # Validate mandatory canonical fields across all records
+        mandatory_fields = {
+            "event_id", "latitude", "longitude", "risk_score", "risk_tier",
+            "evidence_confidence", "confidence_tier", "primary_driver",
+            "thermal_dimension_score", "persistence_dimension_score",
+            "industrial_dimension_score", "spatial_dimension_score",
+            "spectral_dimension_score", "weighted_thermal",
+            "weighted_persistence", "weighted_industrial",
+            "weighted_spatial", "weighted_spectral", "methodology_version",
+        }
+        for ev in events:
+            assert mandatory_fields.issubset(ev.keys()), f"Missing canonical keys in {ev.get('event_id')}"
+
+        # Deterministic SHA-256 digest of normalized JSON content
+        # (sorted keys and compact separators).
+        # Protects event_id, coords, scores, weights, tiers, and metadata from drift across all platforms.
+        canonical_content = json.dumps(events, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        computed_hash = hashlib.sha256(canonical_content).hexdigest()
+        expected_hash = "1bada5b01535fb694b3388dfc5ffe680098a3efdb96e02001fa4a3a4f9d648da"
+        assert computed_hash == expected_hash, (
+            f"Canonical dataset hash mismatch! Computed {computed_hash} != {expected_hash}. "
+            "Canonical pilot events must not be altered."
+        )
+
+    def test_pilot_explanations_contains_zero_non_finite_values(self):
+        data_path = Path(__file__).resolve().parent.parent / "data" / "pilot_explanations.json"
+
+        def forbid_non_finite(val: str):
+            raise ValueError(f"Found non-finite constant: {val}")
+
+        with data_path.open("r", encoding="utf-8") as f:
+            explanations = json.load(f, parse_constant=forbid_non_finite)
+
+        assert len(explanations) == 100
+        text = json.dumps(explanations)
+        assert "NaN" not in text
+        assert "Infinity" not in text
+
+    def test_pilot_risk_summary_integrity(self):
+        data_path = Path(__file__).resolve().parent.parent / "data" / "pilot_risk_summary.json"
+
+        def forbid_non_finite(val: str):
+            raise ValueError(f"Found non-finite constant: {val}")
+
+        with data_path.open("r", encoding="utf-8") as f:
+            summary = json.load(f, parse_constant=forbid_non_finite)
+
+        # zero_spatial_events must remain strictly 19
+        assert summary["coverage"]["zero_spatial_events"] == 19
+
+        # Verify no literal "nan" strings exist
+        summary_text = json.dumps(summary)
+        assert '"nan"' not in summary_text
+
+        # Lowest 5 events have null osm_primary_category
+        for ev in summary["lowest_5_events"]:
+            assert ev["osm_primary_category"] is None
+
+
+class TestSingletonConcurrency:
+    """Validate thread-safe singleton initialization under true first-use concurrent access."""
+
+    def test_concurrent_first_use_initialization_is_thread_safe(self):
+        """
+        Genuinely exercises first-use race conditions by ensuring _repository_instance
+        is None before multiple threads attempt initialization simultaneously at a barrier.
+        """
+        original_instance = event_service._repository_instance
+        original_init = event_service.EventRepository.__init__
+
+        init_counter = 0
+        init_lock = threading.Lock()
+
+        def counting_init(self, *args, **kwargs):
+            nonlocal init_counter
+            with init_lock:
+                init_counter += 1
+            original_init(self, *args, **kwargs)
+
+        try:
+            # 1. Instrument EventRepository.__init__ to track instantiations
+            event_service.EventRepository.__init__ = counting_init
+
+            # 2. Reset singleton to None to force true first-use initialization race
+            event_service._repository_instance = None
+
+            # 3. Coordinate concurrent workers with a synchronization barrier
+            num_workers = 16
+            barrier = threading.Barrier(num_workers)
+            instances: list[Optional[event_service.EventRepository]] = [None] * num_workers
+            exceptions: list[Exception] = []
+
+            def worker(worker_idx: int) -> None:
+                try:
+                    barrier.wait(timeout=5.0)
+                    instances[worker_idx] = event_service.get_event_repository()
+                except Exception as exc:
+                    exceptions.append(exc)
+
+            threads = [
+                threading.Thread(target=worker, args=(i,), name=f"singleton-worker-{i}")
+                for i in range(num_workers)
+            ]
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join(timeout=10.0)
+
+            assert all(not t.is_alive() for t in threads), (
+                "One or more worker threads did not terminate"
+            )
+
+            # 4. Verify no thread encountered an error
+            assert not exceptions, f"Exceptions occurred during concurrent initialization: {exceptions}"
+
+            # 5. Verify every thread received the exact same instance
+            first_instance = instances[0]
+            assert first_instance is not None
+            assert all(inst is first_instance for inst in instances)
+            assert len({id(inst) for inst in instances}) == 1
+
+            # 6. Verify exactly one EventRepository instance was constructed
+            assert init_counter == 1, (
+                f"Singleton violation: EventRepository was initialized {init_counter} times "
+                "instead of exactly 1 under concurrent access."
+            )
+
+        finally:
+            # 7. Restore original production implementation and singleton state
+            event_service.EventRepository.__init__ = original_init
+            event_service._repository_instance = original_instance

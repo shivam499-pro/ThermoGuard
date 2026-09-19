@@ -17,8 +17,10 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 from pathlib import Path
-from typing import Dict, List, Optional
+import threading
+from typing import Any, Dict, List, Optional
 
 from app.schemas.events import (
     BoundingBox,
@@ -36,6 +38,25 @@ from app.schemas.events import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _sanitize_non_finite(obj: Any) -> Any:
+    """
+    Recursively sanitize data structures, converting non-finite float values
+    (NaN, +Infinity, -Infinity) to None. Preserves integers, strings, booleans,
+    finite floats, and None.
+    """
+    if isinstance(obj, float):
+        if not math.isfinite(obj):
+            return None
+        return obj
+    elif isinstance(obj, dict):
+        return {k: _sanitize_non_finite(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [_sanitize_non_finite(v) for v in obj]
+    elif isinstance(obj, tuple):
+        return tuple(_sanitize_non_finite(v) for v in obj)
+    return obj
 
 
 class EventRepository:
@@ -72,10 +93,10 @@ class EventRepository:
             )
 
         with self._events_file.open("r", encoding="utf-8") as f:
-            raw_events = json.load(f)
+            raw_events = _sanitize_non_finite(json.load(f))
 
         with self._explanations_file.open("r", encoding="utf-8") as f:
-            raw_explanations = json.load(f)
+            raw_explanations = _sanitize_non_finite(json.load(f))
 
         if not isinstance(raw_events, list) or len(raw_events) == 0:
             raise ValueError(f"Expected non-empty list in {self._events_file}")
@@ -133,16 +154,13 @@ class EventRepository:
             def _build_dim(key: str, default_name: str) -> DimensionDetail:
                 dim_sb = sb.get(key, {})
                 dim_rt = rt.get(key, {})
+                canonical_norm = float(row.get(f"{key}_dimension_score", 0.0))
+                canonical_weighted = float(row.get(f"weighted_{key}", 0.0)) * 100.0
                 return DimensionDetail(
                     name=dim_sb.get("dimension_name", default_name),
                     weight=float(dim_sb.get("weight", 0.0)),
-                    normalized_score=float(dim_sb.get("normalized_score", 0.0)),
-                    weighted_contribution=float(
-                        dim_sb.get(
-                            "weighted_contribution_points",
-                            row.get(f"weighted_{key}", 0.0),
-                        )
-                    ),
+                    normalized_score=canonical_norm,
+                    weighted_contribution=canonical_weighted,
                     raw=dim_rt,
                 )
 
@@ -262,12 +280,15 @@ class EventRepository:
 
 # ── Global singleton ──────────────────────────────────────────────────────────
 
+_lock = threading.Lock()
 _repository_instance: Optional[EventRepository] = None
 
 
 def get_event_repository() -> EventRepository:
-    """Provide the global singleton EventRepository instance."""
+    """Provide the global singleton EventRepository instance (thread-safe)."""
     global _repository_instance
     if _repository_instance is None:
-        _repository_instance = EventRepository()
+        with _lock:
+            if _repository_instance is None:
+                _repository_instance = EventRepository()
     return _repository_instance
