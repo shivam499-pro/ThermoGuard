@@ -23,7 +23,9 @@
 
 // ── Configuration ─────────────────────────────────────────────────────────────
 
-const API_BASE_URL = 'http://localhost:8000';
+// API origin: configurable via window.THERMOGUARD_API_BASE or window.__ENV__?.API_BASE_URL
+const API_BASE_URL = (typeof window !== 'undefined' && (window.THERMOGUARD_API_BASE || window.__ENV__?.API_BASE_URL))
+  || 'http://localhost:8000';
 const API_EVENTS   = `${API_BASE_URL}/api/events`;
 
 // Risk dimension metadata (weights are display-only; computation is backend)
@@ -199,7 +201,7 @@ const MapModule = (() => {
       });
 
       const marker = L.marker([ev.lat, ev.lon], { icon, title: ev.event_id })
-        .bindPopup(buildPopupHtml(ev), { maxWidth: 220, className: '' });
+        .bindPopup(() => buildPopupElement(ev), { maxWidth: 220, className: '' });
 
       marker.on('click', () => {
         selectEvent(ev.event_id);
@@ -210,17 +212,45 @@ const MapModule = (() => {
     });
   }
 
-  function buildPopupHtml(ev) {
+  function buildPopupElement(ev) {
     const tierCls = tierClass(ev.risk_tier);
     const color = scoreBarColor(ev.risk_tier);
-    return `
-      <div class="map-popup">
-        <div class="map-popup-id">${ev.event_id}</div>
-        <div class="map-popup-score" style="color:${color}">${fmtScore(ev.risk_score)}</div>
-        <div class="map-popup-tier ${tierCls}" style="color:${color}">${display(ev.risk_tier)}</div>
-        <div class="map-popup-driver">▲ ${display(ev.primary_driver)}</div>
-        <button class="map-popup-btn" onclick="selectEvent('${ev.event_id}')">View full assessment</button>
-      </div>`;
+
+    const popup = document.createElement('div');
+    popup.className = 'map-popup';
+
+    const idEl = document.createElement('div');
+    idEl.className = 'map-popup-id';
+    idEl.textContent = ev.event_id;
+    popup.appendChild(idEl);
+
+    const scoreEl = document.createElement('div');
+    scoreEl.className = 'map-popup-score';
+    scoreEl.style.color = color;
+    scoreEl.textContent = fmtScore(ev.risk_score);
+    popup.appendChild(scoreEl);
+
+    const tierEl = document.createElement('div');
+    tierEl.className = `map-popup-tier ${tierCls}`;
+    tierEl.style.color = color;
+    tierEl.textContent = display(ev.risk_tier);
+    popup.appendChild(tierEl);
+
+    const driverEl = document.createElement('div');
+    driverEl.className = 'map-popup-driver';
+    driverEl.textContent = `▲ ${display(ev.primary_driver)}`;
+    popup.appendChild(driverEl);
+
+    const btn = document.createElement('button');
+    btn.className = 'map-popup-btn';
+    btn.type = 'button';
+    btn.textContent = 'View full assessment';
+    btn.addEventListener('click', () => {
+      selectEvent(ev.event_id);
+    });
+    popup.appendChild(btn);
+
+    return popup;
   }
 
   function flyTo(lat, lon, zoom = 9) {
@@ -251,6 +281,12 @@ const ListModule = (() => {
     const container = document.getElementById('event-list');
     container.innerHTML = '';
 
+    // Update filtered count (always set before empty-state check so '0 events' displays)
+    const countEl = document.getElementById('filtered-count');
+    if (countEl) {
+      countEl.textContent = `${events.length} event${events.length !== 1 ? 's' : ''}`;
+    }
+
     if (events.length === 0) {
       container.innerHTML = `
         <div class="list-loading" role="status">
@@ -272,10 +308,6 @@ const ListModule = (() => {
       const sel = container.querySelector(`[data-id="${State.selectedId}"]`);
       if (sel) sel.classList.add('selected');
     }
-
-    // Update filtered count
-    document.getElementById('filtered-count').textContent =
-      `${events.length} event${events.length !== 1 ? 's' : ''}`;
   }
 
   function buildCard(ev) {
@@ -294,21 +326,37 @@ const ListModule = (() => {
 
     card.innerHTML = `
       <div class="card-top">
-        <code class="card-event-id">${ev.event_id}</code>
-        <span class="card-tier-badge ${tierBadgeClass(ev.risk_tier)}">${display(ev.risk_tier, '—')}</span>
+        <code class="card-event-id"></code>
+        <span class="card-tier-badge"></span>
       </div>
       <div class="card-score-row">
         <div class="card-score-bar-wrap">
-          <div class="card-score-bar" style="width:${barPct}%;background:${color}"></div>
+          <div class="card-score-bar"></div>
         </div>
-        <span class="card-score-text" style="color:${color}">${fmtScore(ev.risk_score)}</span>
+        <span class="card-score-text"></span>
       </div>
       <div class="card-meta">
         <span class="card-driver">
           <span class="card-driver-dot"></span>
-          ${meta || 'Not available'}
         </span>
       </div>`;
+
+    card.querySelector('.card-event-id').textContent = ev.event_id;
+
+    const badge = card.querySelector('.card-tier-badge');
+    badge.className = `card-tier-badge ${tierBadgeClass(ev.risk_tier)}`;
+    badge.textContent = display(ev.risk_tier, '—');
+
+    const bar = card.querySelector('.card-score-bar');
+    bar.style.width = `${barPct}%`;
+    bar.style.background = color;
+
+    const scoreText = card.querySelector('.card-score-text');
+    scoreText.style.color = color;
+    scoreText.textContent = fmtScore(ev.risk_score);
+
+    const driverEl = card.querySelector('.card-driver');
+    driverEl.appendChild(document.createTextNode(meta || 'Not available'));
 
     card.addEventListener('click',   () => selectEvent(ev.event_id));
     card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') selectEvent(ev.event_id); });
@@ -425,7 +473,7 @@ const DetailModule = (() => {
     setText('det-worldcover',   display(ev.context?.worldcover_class_name));
     setText('det-osm-cat',      display(ev.context?.osm_primary_category));
     setText('det-osm-sub',      display(ev.context?.osm_sub_category));
-    const distInd = ev.context?.distance_to_industrial_m;
+    const distInd = ev.dimensions?.industrial?.raw?.min_distance_m ?? ev.context?.distance_to_industrial_m;
     setText('det-dist-ind',
       distInd != null
         ? `${Number(distInd).toFixed(0)} m`
@@ -579,11 +627,17 @@ window.selectEvent = async function selectEvent(eventId) {
   DetailModule.setLoading();
   try {
     const detail = await fetchEvent(eventId);
+    // Race guard: verify selection has not changed while waiting for network
+    if (State.selectedId !== eventId) return;
     DetailModule.render(detail);
   } catch (err) {
     console.error('Failed to load event detail:', err);
+    // Race guard: do not disturb a newer selection
+    if (State.selectedId !== eventId) return;
     showToast(`Could not load detail for ${eventId}. Is the backend running?`, 'error');
     DetailModule.setEmpty();
+    ListModule.setSelectedCard(null);
+    MapModule.closeAllPopups();
     State.selectedId = null;
   }
 };
@@ -658,6 +712,14 @@ async function init() {
   try {
     const events = await fetchEvents();
     State.allEvents = events;
+
+    // Derive authoritative methodology version from API response
+    if (events.length > 0 && events[0].methodology_version) {
+      const hdrMethodology = document.getElementById('hdr-methodology');
+      if (hdrMethodology) {
+        hdrMethodology.textContent = events[0].methodology_version;
+      }
+    }
 
     updateTierCounts(events);
     refreshList();
