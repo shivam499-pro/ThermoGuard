@@ -20,12 +20,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.config import get_settings
+from app.observability import configure_logging
 from app.schemas import HealthResponse
 from app.api.events import router as events_router
+from app.api.jobs import router as jobs_router
 
 # ── Logging setup ─────────────────────────────────────────────────────────────
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -40,6 +41,10 @@ def create_app() -> FastAPI:
     (via uvicorn) and test usage (via TestClient).
     """
     settings = get_settings()
+    if settings.json_logs:
+        configure_logging(settings.log_level)
+    else:
+        logging.basicConfig(level=settings.log_level)
 
     app = FastAPI(
         title=settings.app_name,
@@ -87,6 +92,7 @@ def create_app() -> FastAPI:
 
     # ── Domain routers ─────────────────────────────────────────────────────
     app.include_router(events_router, prefix=settings.api_prefix)
+    app.include_router(jobs_router, prefix=settings.api_prefix)
 
     # ── Routes ────────────────────────────────────────────────────────────────
 
@@ -122,3 +128,11 @@ def create_app() -> FastAPI:
 # Uvicorn / ASGI server entry point: `uvicorn app.main:app`
 
 app = create_app()
+
+# API Gateway + Lambda ingress adapter (Mangum). Local uvicorn ignores this.
+try:
+    from mangum import Mangum
+
+    handler = Mangum(app, lifespan="off")
+except ImportError:  # pragma: no cover - local pytest without mangum is fine
+    handler = None
