@@ -1,4 +1,4 @@
-﻿"""
+"""
 ThermoGuard -- Bedrock Analyst Assembly Service.
 
 Provides a pure-Python service layer that:
@@ -257,3 +257,66 @@ def _collect_keys(obj: object, keys: set = None) -> set:
         for item in obj:
             _collect_keys(item, keys)
     return keys
+
+
+def score_event_out_of_band(event_id: str) -> dict:
+    """
+    Worker-Lambda entry: cache lookup, optional Bedrock, then immutable assembly.
+
+    Runs off the API request path so Ingress-Lambda only enqueues SQS messages.
+    """
+    import os
+    import time
+
+    from app.services.bedrock_runtime import (
+        bedrock_enabled,
+        invoke_bedrock_analyst,
+        local_analyst_output,
+        model_id,
+    )
+    from app.services.event_service import get_event_repository
+    from app.store.cache import get_memory_cache, semantic_cache_key
+
+    repo = get_event_repository()
+    detail = repo.get_event(event_id)
+    if detail is None:
+        raise ValueError(f"Thermal event '{event_id}' not found")
+
+    bedrock_input = build_bedrock_input(detail)
+    assert_no_ground_truth_in_input(bedrock_input)
+    cache_key = semantic_cache_key(detail.event_id, detail.methodology_version, model_id())
+    memory = get_memory_cache()
+    cached = memory.get(cache_key)
+    cache_hit = cached is not None
+
+    if cached is None and os.environ.get("STORAGE_BACKEND", "file").lower() == "dynamodb":
+        try:
+            from app.store.dynamodb import DynamoCacheStore
+
+            cached = DynamoCacheStore().get(cache_key)
+            cache_hit = cached is not None
+        except Exception:
+            logger.exception("DynamoDB semantic cache read failed")
+
+    if cached is not None:
+        llm_output = BedrockAnalystOutput.model_validate(cached)
+    elif bedrock_enabled():
+        llm_output = invoke_bedrock_analyst(bedrock_input)
+    else:
+        llm_output = local_analyst_output(detail, bedrock_input)
+
+    memory.put(cache_key, llm_output.model_dump())
+    if os.environ.get("STORAGE_BACKEND", "file").lower() == "dynamodb":
+        try:
+            from app.store.dynamodb import DynamoCacheStore
+
+            DynamoCacheStore().put(
+                cache_key,
+                llm_output.model_dump(),
+                int(time.time()) + 86400,
+            )
+        except Exception:
+            logger.exception("DynamoDB semantic cache write failed")
+
+    assembled = assemble_analyst_response(detail, llm_output)
+    return {"result": assembled.model_dump(), "cache_hit": cache_hit}
