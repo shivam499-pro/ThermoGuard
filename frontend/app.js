@@ -705,6 +705,18 @@ function setupControls() {
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
 
 async function init() {
+  const banner = document.getElementById('cookie-banner');
+  const accept = document.getElementById('cookie-accept');
+  if (banner && accept) {
+    if (!window.localStorage.getItem('thermoguard-cookie-ok')) {
+      banner.removeAttribute('hidden');
+    }
+    accept.addEventListener('click', () => {
+      window.localStorage.setItem('thermoguard-cookie-ok', '1');
+      banner.setAttribute('hidden', '');
+    });
+  }
+
   MapModule.init();
   setupTierChips();
   setupControls();

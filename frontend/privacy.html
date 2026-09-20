@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — ThermoGuard</title>
+  <meta name="description" content="How ThermoGuard handles data: public satellite-derived pilot events, no personal accounts, AWS hosting in ap-south-1." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="legal-page">
+  <header class="legal-header">
+    <a href="index.html" class="legal-back">← ThermoGuard dashboard</a>
+    <h1>Privacy Policy</h1>
+    <p class="legal-updated">Last updated: 20 September 2026 · Built for AWS Builder / Bharat Builds demonstration</p>
+  </header>
+  <article class="legal-body">
+    <p>ThermoGuard is an <strong>investigation-priority research dashboard</strong> for satellite thermal anomaly clusters. It is not a consumer social product and it is <strong>not a fire-confirmation or emergency-dispatch system</strong>.</p>
+
+    <h2>What we display</h2>
+    <p>The live map shows a curated <strong>100-event pilot cohort</strong> derived from public Earth-observation sources (including NASA FIRMS / VIIRS–MODIS detections, Sentinel-2 reflectance indices, OpenStreetMap proximity, and ESA WorldCover class names). Records are identified by synthetic event IDs (for example EVT_…). They are not named individuals.</p>
+
+    <h2>Personal data</h2>
+    <p>This demonstration <strong>does not create user accounts</strong>, does not ask for names, emails, or phone numbers, and does not run a login form. We do not sell personal data. We do not run advertising pixels.</p>
+
+    <h2>Where it runs</h2>
+    <p>The static dashboard is hosted on <strong>AWS Amplify</strong>. The API is <strong>Amazon API Gateway</strong> and <strong>AWS Lambda</strong> in region <strong>ap-south-1</strong> (Mumbai). Event records used by the live API are stored in <strong>Amazon DynamoDB</strong>. AWS processes technical logs (for example CloudWatch request metadata) under AWS’s role as infrastructure provider.</p>
+
+    <h2>Browsing data</h2>
+    <p>Your browser will request map tiles from OpenStreetMap’s public tile servers and fonts from Google Fonts. Those third parties may see your IP address under their own policies. ThermoGuard itself stores a single optional flag in <code>localStorage</code> if you dismiss the cookie notice (<code>thermoguard-cookie-ok</code>) so the banner does not return every refresh.</p>
+
+    <h2>Cookies</h2>
+    <p>We do not set advertising or cross-site tracking cookies. See the notice on the dashboard. Map and font vendors are outside this app’s control.</p>
+
+    <h2>Contact</h2>
+    <p>Project source and issues: <a href="https://github.com/shivam499-pro/ThermoGuard">github.com/shivam499-pro/ThermoGuard</a></p>
+  </article>
+</body>
+</html>

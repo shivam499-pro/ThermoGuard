@@ -858,5 +858,61 @@ a      { color: var(--text-accent); text-decoration: none; }
 .monospace { font-family: var(--font-mono); }
 [hidden] { display: none !important; }
 
+.legal-nav {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-left: 8px;
+}
+.legal-nav a {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+.legal-nav a:hover { color: var(--accent-primary); }
+
+.cookie-banner {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 2100;
+  max-width: 360px;
+  padding: 12px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+.cookie-banner p { margin: 0 0 8px; }
+.cookie-banner a { color: var(--accent-primary); }
+.cookie-banner button {
+  border: 0;
+  border-radius: 6px;
+  padding: 6px 12px;
+  background: linear-gradient(90deg, #ff6b35, #f7931e);
+  color: #111;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+body.legal-page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+  font-family: var(--font-sans, Inter, system-ui, sans-serif);
+  background: #0f1419;
+  color: #e8edf5;
+  line-height: 1.6;
+}
+.legal-header h1 { font-size: 1.6rem; margin: 8px 0; }
+.legal-back { color: #ff6b35; text-decoration: none; font-size: 0.85rem; }
+.legal-updated, .legal-kicker { color: #8b95b0; font-size: 0.8rem; }
+.legal-body h2 { font-size: 1.05rem; margin-top: 1.4rem; }
+.legal-body a { color: #f7931e; }
+.legal-kicker { letter-spacing: 0.12em; text-transform: uppercase; }
+
 /* ── SVG gradient definitions ───────────────────────────────────────────────── */
 /* Injected inline via JS so the score-ring fill can reference it */

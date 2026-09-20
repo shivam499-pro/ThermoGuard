@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terms of Use — ThermoGuard</title>
+  <meta name="description" content="Terms for using ThermoGuard: investigation-priority scores only, not emergency authority, locked deterministic methodology." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="legal-page">
+  <header class="legal-header">
+    <a href="index.html" class="legal-back">← ThermoGuard dashboard</a>
+    <h1>Terms of Use</h1>
+    <p class="legal-updated">Last updated: 20 September 2026</p>
+  </header>
+  <article class="legal-body">
+    <p>By opening the ThermoGuard dashboard or API you agree to use it as a <strong>research and demonstration tool</strong> only.</p>
+
+    <h2>Not emergency services</h2>
+    <p>Risk scores and tiers are <strong>investigation-priority / triage signals</strong> from a locked five-dimension model (30/25/20/10/15). They are <strong>not</strong> a validated probability of active combustion, wildfire, or industrial accident. Do <strong>not</strong> use ThermoGuard as the sole basis for evacuation, emergency dispatch, insurance denial, or legal claims.</p>
+
+    <h2>Scientific limits</h2>
+    <ul>
+      <li>Sentinel-2 SWIR bands measure surface reflectance contrast, not temperature.</li>
+      <li>OpenStreetMap proximity is co-location evidence, not proof of industrial causation.</li>
+      <li>Missing OSM data does not prove industry is absent.</li>
+      <li>LOW risk plus LOW confidence does not mean a location is safe.</li>
+    </ul>
+
+    <h2>No warranty</h2>
+    <p>The software and the 100-event pilot dataset are provided “as is” for hackathon and educational review. Satellite detections, OSM, and land-cover layers can be incomplete, delayed, or wrong.</p>
+
+    <h2>API and dashboard</h2>
+    <p>Public HTTPS endpoints are rate-limited by AWS. Do not attempt to overload the API. Do not scrape in a way that violates OpenStreetMap tile usage.</p>
+
+    <h2>Contact</h2>
+    <p><a href="https://github.com/shivam499-pro/ThermoGuard">github.com/shivam499-pro/ThermoGuard</a></p>
+  </article>
+</body>
+</html>
