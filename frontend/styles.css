@@ -59,6 +59,7 @@
 
   /* Layout */
   --header-h:      56px;
+  --footer-h:      36px;
   --left-panel-w:  320px;
   --right-panel-w: 360px;
 }
@@ -168,6 +169,7 @@ a      { color: var(--text-accent); text-decoration: none; }
   grid-template-rows: 1fr;
   height: 100vh;
   padding-top: var(--header-h);
+  padding-bottom: var(--footer-h);
 }
 
 /* ── Left panel ────────────────────────────────────────────────────────────── */
@@ -860,21 +862,37 @@ a      { color: var(--text-accent); text-decoration: none; }
 
 .legal-nav {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
-  margin-left: 8px;
 }
 .legal-nav a {
-  font-size: 0.68rem;
-  color: var(--text-muted);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
   text-decoration: none;
 }
 .legal-nav a:hover { color: var(--accent-primary); }
 
+.app-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--footer-h);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  background: rgba(11, 14, 20, 0.94);
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
 .cookie-banner {
   position: fixed;
   left: 16px;
-  bottom: 16px;
+  bottom: calc(var(--footer-h) + 12px);
   z-index: 2100;
   max-width: 360px;
   padding: 12px 14px;
