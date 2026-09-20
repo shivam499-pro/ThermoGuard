@@ -730,9 +730,9 @@ async function init() {
       <span style="font-size:1.4rem">⚠️</span>
       <span style="color:#ef4444;text-align:center">
         Could not reach ThermoGuard API.<br>
-        <span style="color:var(--text-muted);font-size:0.75rem">Make sure the backend is running on <code style="font-family:monospace">localhost:8000</code>.</span>
+        <span style="color:var(--text-muted);font-size:0.75rem">Set <code style="font-family:monospace">window.THERMOGUARD_API_BASE</code> in <code>config.js</code> to the API Gateway URL (local default is <code>localhost:8000</code>).</span>
       </span>`;
-    showToast('Backend unreachable — start the FastAPI server on port 8000.', 'error', 8000);
+    showToast('Backend unreachable — check config.js API Gateway origin or local uvicorn.', 'error', 8000);
     document.getElementById('hdr-event-count').textContent = 'API offline';
   }
 }
