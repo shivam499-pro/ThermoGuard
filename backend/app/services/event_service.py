@@ -80,6 +80,7 @@ class EventRepository:
         self._details_cache: Dict[str, EventDetail] = {}
 
         self._load_data()
+        self._maybe_overlay_dynamodb()
 
     def _load_data(self) -> None:
         """Load and validate the curated pilot datasets."""
@@ -276,6 +277,40 @@ class EventRepository:
     def get_event_count(self) -> int:
         """Return total event count."""
         return len(self._summaries_cache)
+
+    def list_events_by_tier(self, risk_tier: str) -> List[EventSummary]:
+        """GSI-style read split: filter summaries by risk_tier."""
+        return [event for event in self._summaries_cache if event.risk_tier == risk_tier]
+
+    def _maybe_overlay_dynamodb(self) -> None:
+        """When STORAGE_BACKEND=dynamodb, replace file cache with table items."""
+        from app.config import get_settings
+
+        settings = get_settings()
+        if settings.storage_backend.lower() != "dynamodb":
+            return
+        try:
+            from app.store.dynamodb import DynamoEventStore
+
+            rows = DynamoEventStore(settings.events_table).list_events()
+        except Exception:
+            logger.exception("DynamoDB overlay failed; keeping bundled JSON repository")
+            return
+        if not rows:
+            logger.warning("DynamoDB events table empty; keeping bundled JSON repository")
+            return
+        summaries: List[EventSummary] = []
+        details: Dict[str, EventDetail] = {}
+        for row in rows:
+            summary_payload = row.get("summary") or row
+            detail_payload = row.get("detail") or row
+            summary = EventSummary.model_validate(summary_payload)
+            detail = EventDetail.model_validate(detail_payload)
+            summaries.append(summary)
+            details[summary.event_id] = detail
+        self._summaries_cache = summaries
+        self._details_cache = details
+        logger.info("EventRepository overlaid %d DynamoDB events", len(summaries))
 
 
 # ── Global singleton ──────────────────────────────────────────────────────────
