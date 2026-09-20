@@ -10,11 +10,11 @@ Satellite-driven thermal anomaly **investigation priority** for industrial fire 
 
 | Surface | URL |
 |---|---|
-| **GIS dashboard (Amplify)** | https://main.d1z0ic5gt8xfky.amplifyapp.com |
-| **API Gateway** | https://svrtmrkr4b.execute-api.ap-south-1.amazonaws.com |
-| **Health** | https://svrtmrkr4b.execute-api.ap-south-1.amazonaws.com/health |
-| **Events** | https://svrtmrkr4b.execute-api.ap-south-1.amazonaws.com/api/events |
+| **API health (open this, not the API root)** | https://svrtmrkr4b.execute-api.ap-south-1.amazonaws.com/health |
+| **Events JSON** | https://svrtmrkr4b.execute-api.ap-south-1.amazonaws.com/api/events |
+| **OpenAPI docs** | https://svrtmrkr4b.execute-api.ap-south-1.amazonaws.com/docs |
 | **Region** | `ap-south-1` (Mumbai) |
+
 
 ---
 
