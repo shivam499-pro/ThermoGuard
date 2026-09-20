@@ -34,6 +34,18 @@ class Settings(BaseSettings):
 
     # ── Logging ──────────────────────────────────────────────────────────────
     log_level: str = "INFO"
+    json_logs: bool = True
+
+    # ── Storage / AWS serverless ─────────────────────────────────────────────
+    storage_backend: str = "file"  # file | dynamodb
+    aws_region: str = "ap-south-1"
+    events_table: str = "thermoguard-events"
+    jobs_table: str = "thermoguard-jobs"
+    cache_table: str = "thermoguard-semantic-cache"
+    vectors_table: str = "thermoguard-vectors"
+    sqs_queue_url: str = ""
+    bedrock_enabled: bool = False
+    bedrock_model_id: str = "amazon.nova-lite-v1:0"
 
 
 @lru_cache(maxsize=1)
