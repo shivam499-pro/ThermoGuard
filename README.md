@@ -87,7 +87,7 @@ The **14 architecture pillars** are patterns on these five services (two Lambdas
 
 | Pillar | Mapping |
 |---|---|
-| 1 API Gateway | HTTP API `$default` → Ingress-Lambda |
+| 1 API Gateway | HTTP API  → Ingress-Lambda |
 | 2 CDN | Amplify Hosting |
 | 3 Serverless compute | Lambda zip (Python 3.12), not a standing uvicorn server |
 | 4 Two nodes | `thermoguard-ingress` + `thermoguard-worker` |
@@ -96,4 +96,4 @@ The **14 architecture pillars** are patterns on these five services (two Lambdas
 | 7 Logging | CloudWatch via Lambda stdout |
 | 8 GitOps | `.github/workflows/gitops.yml` |
 | 9 Message buffer | SQS `thermoguard-scoring` |
-| 10 Database |
+| 10 Database | DynamoDB |
