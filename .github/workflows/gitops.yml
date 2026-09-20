@@ -1,0 +1,93 @@
+name: GitOps
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run backend tests
+        run: python -m pytest tests/ -q
+        env:
+          JSON_LOGS: "false"
+          STORAGE_BACKEND: file
+
+  deploy:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-south-1
+      - uses: hashicorp/setup-terraform@v3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build Lambda zip (no Docker)
+        working-directory: backend
+        run: python scripts/package_lambda.py
+
+      - name: Terraform init / apply
+        working-directory: infra/terraform
+        run: |
+          terraform init
+          terraform apply -auto-approve
+
+      - name: Seed DynamoDB
+        working-directory: backend
+        env:
+          STORAGE_BACKEND: dynamodb
+          AWS_DEFAULT_REGION: ap-south-1
+        run: |
+          pip install -r requirements.txt
+          python scripts/seed_dynamodb.py
+
+      - name: Deploy frontend zip to Amplify
+        run: |
+          API=$(terraform -chdir=infra/terraform output -raw api_gateway_url)
+          printf "window.THERMOGUARD_API_BASE = '%s';\n" "$API" > frontend/config.js
+          (cd frontend && zip -r /tmp/frontend.zip .)
+          python - <<'PY'
+          import json, subprocess, urllib.request
+          app = subprocess.check_output(
+              ["terraform", "-chdir=infra/terraform", "output", "-raw", "amplify_app_id"],
+              text=True,
+          ).strip()
+          deploy = json.loads(subprocess.check_output(
+              ["aws", "amplify", "create-deployment", "--app-id", app, "--branch-name", "main"],
+              text=True,
+          ))
+          urllib.request.urlopen(urllib.request.Request(
+              deploy["zipUploadUrl"],
+              data=open("/tmp/frontend.zip", "rb").read(),
+              method="PUT",
+              headers={"Content-Type": "application/zip"},
+          ))
+          subprocess.check_call([
+              "aws", "amplify", "start-deployment",
+              "--app-id", app,
+              "--branch-name", "main",
+              "--job-id", deploy["jobId"],
+          ])
+          PY

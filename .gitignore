@@ -38,9 +38,12 @@ credentials/
 # AWS
 .aws/
 cdk.out/
+.terraform/
 *.tfstate
 *.tfstate.backup
+crash.log
 *.tfvars
+!terraform.tfvars.example
 
 # IDE
 .vscode/

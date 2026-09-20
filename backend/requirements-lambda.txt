@@ -1,0 +1,8 @@
+# Lambda zip only (Amazon Linux). boto3/numpy/pytest/uvicorn stay off this list:
+# - boto3 is already on the Lambda Python runtime
+# - numpy is not imported by the API/worker path
+# - pytest/uvicorn are local-dev only
+fastapi>=0.111.0,<0.200.0
+mangum>=0.17.0,<0.20.0
+pydantic>=2.7.0,<3.0.0
+pydantic-settings>=2.2.0,<3.0.0

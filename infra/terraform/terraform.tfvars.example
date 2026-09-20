@@ -1,0 +1,4 @@
+aws_region          = "ap-south-1"
+enable_global_tables = false
+bedrock_enabled      = false
+project              = "thermoguard"
